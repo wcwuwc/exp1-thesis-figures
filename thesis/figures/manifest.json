@@ -63,6 +63,13 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
+      "id": "ch4_cpsat_coplacement_timeline",
+      "path": "thesis/figures/ch4/cpsat_node_coplacement_timeline.png",
+      "caption": "CP-SAT 节点共置时间线（按 device_num 分条，脱敏 9 模型，600s）",
+      "source": "research/model_solver/outputs/run_cpsat/node_coplacement_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
       "id": "ch4_cpsat_u_heatmap",
       "path": "thesis/figures/ch4/cpsat_u_matrices_heatmap.png",
       "caption": "CP-SAT 各时间片模型×节点部署热力图",
