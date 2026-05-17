@@ -9,35 +9,29 @@ Stable paths for thesis / Notion / LaTeX. Sources are copied from `research/*/ou
 | Repo | [wcwuwc/exp1-thesis-figures](https://github.com/wcwuwc/exp1-thesis-figures) |
 | Raw URL prefix | `https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/` |
 
-**One-time setup** (after creating an empty public repo on GitHub):
+**Agent 完整说明：** [`../agent_workflow/FIGURES_NOTION_GITHUB.md`](../agent_workflow/FIGURES_NOTION_GITHUB.md)
+
+**One-time setup** (repo already exists on GitHub):
 
 ```bash
-# From repo root — only if this clone has no github remote yet
-git remote add github git@github.com:wcwuwc/exp1-thesis-figures.git
-
-# Sync plots, commit, push figures tree (first push may use -u)
+git remote add github git@github.com:wcwuwc/exp1-thesis-figures.git 2>/dev/null || true
 python3 thesis/scripts/sync_thesis_figures.py
 git add thesis/figures/
 git commit -m "figures: sync from experiment outputs"
-git push github main
+# 仅推 figures 提交，勿推整个 exp1 main：
+git push github HEAD:refs/heads/main
 ```
-
-To publish **only** `thesis/figures/` without mirroring the whole `exp1` tree, use a separate clone or [git subtree split](https://git-scm.com/docs/git-subtree); the manifest and script stay the same.
 
 ## Daily workflow
 
 ```bash
-# 1. Re-run experiments (if needed), then:
 python3 thesis/scripts/sync_thesis_figures.py
-
-# 2. Preview Notion markdown lines:
-python3 thesis/scripts/sync_thesis_figures.py --markdown
-
-# 3. Commit & push to GitHub
-git add thesis/figures/ && git commit -m "figures: update ch4 plots" && git push github main
+python3 thesis/scripts/sync_thesis_figures.py --markdown   # Notion 预览
+git add thesis/figures/ && git commit -m "figures: update ch4 plots"
+git push github HEAD:refs/heads/main
 ```
 
-Agent can insert images in Notion with URLs from `manifest.json` (`github.base_url` + `path`).
+⚠️ Do **not** use `git push github main` unless `main` only contains figure commits.
 
 ## Layout
 
