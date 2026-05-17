@@ -1,0 +1,73 @@
+{
+  "github": {
+    "owner": "wcwuwc",
+    "repo": "exp1-thesis-figures",
+    "branch": "main",
+    "base_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main"
+  },
+  "figures": [
+    {
+      "id": "ch3_qpm_anonymized",
+      "path": "thesis/figures/ch3/newdata_anonymized_qps.png",
+      "caption": "匿名化模型 QPM 时序（7 日）",
+      "source": "research/demand_inference/outputs/qpm/newdata_anonymized_qps.png",
+      "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07"
+    },
+    {
+      "id": "ch4_compare_metrics",
+      "path": "thesis/figures/ch4/compare_metrics_bars.png",
+      "caption": "CP-SAT 与 SA 方案指标对比",
+      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_metrics_bars.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_cost",
+      "path": "thesis/figures/ch4/compare_cost_breakdown.png",
+      "caption": "成本分解对比",
+      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_cost_breakdown.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_objective",
+      "path": "thesis/figures/ch4/compare_objective_vs_base.png",
+      "caption": "相对基线目标值对比",
+      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_objective_vs_base.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_lease",
+      "path": "thesis/figures/ch4/compare_lease_timeline.png",
+      "caption": "长租/短租节点时间线对比",
+      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_lease_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_switch",
+      "path": "thesis/figures/ch4/compare_switch_metrics.png",
+      "caption": "模型切换指标对比",
+      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_switch_metrics.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_cpsat_lease",
+      "path": "thesis/figures/ch4/cpsat_lease_usage_timeline.png",
+      "caption": "CP-SAT 租约使用时间线",
+      "source": "research/model_solver/outputs/run_cpsat/lease_usage_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_sa_lease_sweep",
+      "path": "thesis/figures/ch4/sa_lease_sweep.png",
+      "caption": "SA 阶梯法长租数 K 扫描",
+      "source": "research/model_solver/outputs/sa_lease_sweep_300/lease_sweep.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_n_feasibility",
+      "path": "thesis/figures/ch4/n_sweep.png",
+      "caption": "节点池规模 N 可行性扫描",
+      "source": "research/model_solver/outputs/n_feasibility_smoke/n_sweep.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    }
+  ]
+}
