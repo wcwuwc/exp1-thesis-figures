@@ -96,6 +96,48 @@
       "caption": "节点池规模 N 可行性扫描",
       "source": "research/model_solver/outputs/n_feasibility_smoke/n_sweep.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_la1_s_ordered_node_timeline",
+      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_node_model_timeline.png",
+      "caption": "CP-SAT α=1+s有序：节点—模型调度时间线（15 长租 + 17 按需）",
+      "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/node_model_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_la1_s_ordered_coplacement",
+      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_node_coplacement_timeline.png",
+      "caption": "CP-SAT α=1+s有序：节点共置时间线",
+      "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/node_coplacement_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_la1_s_ordered_lease",
+      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_lease_usage_timeline.png",
+      "caption": "CP-SAT α=1+s有序：租约使用时间线",
+      "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/lease_usage_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_la1_s_ordered_metrics",
+      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_metrics.png",
+      "caption": "α=1 无约束 vs s有序：指标对比",
+      "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_metrics_bars.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_la1_s_ordered_switch",
+      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_switch.png",
+      "caption": "α=1 无约束 vs s有序：切换与 Σ(u−c)",
+      "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_switch_metrics.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_la1_s_ordered_lease",
+      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_lease.png",
+      "caption": "α=1 无约束 vs s有序：长租/按需活跃节点时序",
+      "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_lease_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     }
   ]
 }
