@@ -17,28 +17,28 @@
       "id": "ch4_compare_metrics",
       "path": "thesis/figures/ch4/compare_metrics_bars.png",
       "caption": "CP-SAT 与 SA 方案指标对比",
-      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_metrics_bars.png",
+      "source": "research/model_solver/outputs/compare_standard_600s/compare_metrics_bars.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
       "id": "ch4_compare_cost",
       "path": "thesis/figures/ch4/compare_cost_breakdown.png",
       "caption": "成本分解对比",
-      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_cost_breakdown.png",
+      "source": "research/model_solver/outputs/compare_standard_600s/compare_cost_breakdown.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
       "id": "ch4_compare_objective",
       "path": "thesis/figures/ch4/compare_objective_vs_base.png",
       "caption": "相对基线目标值对比",
-      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_objective_vs_base.png",
+      "source": "research/model_solver/outputs/compare_standard_600s/compare_objective_vs_base.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
       "id": "ch4_compare_lease",
       "path": "thesis/figures/ch4/compare_lease_timeline.png",
       "caption": "长租/短租节点时间线对比",
-      "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_lease_timeline.png",
+      "source": "research/model_solver/outputs/compare_standard_600s/compare_lease_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
@@ -66,7 +66,7 @@
       "id": "ch4_cpsat_coplacement_timeline",
       "path": "thesis/figures/ch4/cpsat_node_coplacement_timeline.png",
       "caption": "CP-SAT 节点共置时间线（按 device_num 分条，脱敏 9 模型，600s）",
-      "source": "research/model_solver/outputs/run_cpsat/node_coplacement_timeline.png",
+      "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
@@ -79,8 +79,8 @@
     {
       "id": "ch4_cpsat_per_model_qpm",
       "path": "thesis/figures/ch4/cpsat_per_model_qpm_vs_p99.png",
-      "caption": "CP-SAT 分模型有效产能与 SLA 需求下界",
-      "source": "research/model_solver/outputs/run_cpsat/per_model_qpm_vs_p99.png",
+      "caption": "CP-SAT 分模型有效产能与 SLA 需求下界（α=1，s有序）",
+      "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/per_model_qpm_vs_p99.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     },
     {
@@ -137,6 +137,41 @@
       "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_lease.png",
       "caption": "α=1 无约束 vs s有序：长租/按需活跃节点时序",
       "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_lease_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_sa_trace",
+      "path": "thesis/figures/ch4/compare_sa_trace.png",
+      "caption": "SA 无惩罚 vs α=1：搜索轨迹（cost 与接受率）",
+      "source": "research/model_solver/outputs/compare_sa_vs_sa_la1/compare_sa_trace.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_sa_vs_sa_la1_metrics",
+      "path": "thesis/figures/ch4/compare_sa_vs_sa_la1_metrics.png",
+      "caption": "SA 无惩罚 vs α=1：指标对比",
+      "source": "research/model_solver/outputs/compare_sa_vs_sa_la1/compare_metrics_bars.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_compare_sa_vs_sa_la1_lease",
+      "path": "thesis/figures/ch4/compare_sa_vs_sa_la1_lease.png",
+      "caption": "SA 无惩罚 vs α=1：长租/按需活跃节点时序",
+      "source": "research/model_solver/outputs/compare_sa_vs_sa_la1/compare_lease_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_sa_la1_coplacement",
+      "path": "thesis/figures/ch4/sa_la1_node_coplacement_timeline.png",
+      "caption": "SA α=1：节点共置时间线",
+      "source": "research/model_solver/outputs/run_sa_la1/node_coplacement_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
+    },
+    {
+      "id": "ch4_sa_standard_coplacement",
+      "path": "thesis/figures/ch4/sa_standard_node_coplacement_timeline.png",
+      "caption": "模拟退火（α=1，s有序，600s）：节点共置时间线",
+      "source": "research/model_solver/outputs/run_SA_alpha1_600s_migrate_s_ordered/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939"
     }
   ]
