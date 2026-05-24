@@ -14,6 +14,34 @@
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07"
     },
     {
+      "id": "ch3_dice_best_dist_summary",
+      "path": "thesis/figures/ch3/dice_best_dist_summary.png",
+      "caption": "图3-2a 各 30min slot 最优到达分布类型汇总（dice.csv，1min 子窗口）",
+      "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_best_dist_summary.png",
+      "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07"
+    },
+    {
+      "id": "ch3_dice_pmf_14_16",
+      "path": "thesis/figures/ch3/dice_poisson_pmf_14_16.png",
+      "caption": "图3-2b 14:00 slot 经验 PMF 与 NB 拟合（典型高峰 slot）",
+      "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_poisson_pmf_14_16.png",
+      "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07"
+    },
+    {
+      "id": "ch3_dice_best_dist_all_slots",
+      "path": "thesis/figures/ch3/dice_best_dist_all_slots.png",
+      "caption": "图3-3 48 slot 经验 PMF vs 最优理论 PMF（Poisson/NB）",
+      "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_best_dist_all_slots.png",
+      "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07"
+    },
+    {
+      "id": "ch3_dice_dispersion_summary",
+      "path": "thesis/figures/ch3/dice_poisson_dispersion_summary.png",
+      "caption": "图3-4 离散指数 D_t 与 Poisson 拟合优度（48 slot）",
+      "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_poisson_dispersion_summary.png",
+      "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07"
+    },
+    {
       "id": "ch4_compare_metrics",
       "path": "thesis/figures/ch4/compare_metrics_bars.png",
       "caption": "CP-SAT 与 SA 方案指标对比",
