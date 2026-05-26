@@ -9,7 +9,10 @@ Stable paths for thesis / Notion / LaTeX. Sources are copied from `research/*/ou
 | Repo | [wcwuwc/exp1-thesis-figures](https://github.com/wcwuwc/exp1-thesis-figures) |
 | Raw URL prefix | `https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/` |
 
-**Agent 完整说明：** [`../agent_workflow/FIGURES_NOTION_GITHUB.md`](../agent_workflow/FIGURES_NOTION_GITHUB.md)
+**Agent 完整说明：**
+
+- 同步 / 图床 / Notion：[`../agent_workflow/FIGURES_NOTION_GITHUB.md`](../agent_workflow/FIGURES_NOTION_GITHUB.md)
+- **理解图片含义**：[`AGENT_READ_FIGURES.md`](AGENT_READ_FIGURES.md) + [`descriptions.json`](descriptions.json)
 
 **One-time setup** (repo already exists on GitHub):
 

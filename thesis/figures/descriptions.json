@@ -1,48 +1,17 @@
 {
-  "github": {
-    "owner": "wcwuwc",
-    "repo": "exp1-thesis-figures",
-    "branch": "main",
-    "base_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main"
-  },
-  "descriptions_index": "thesis/figures/descriptions.json",
-  "agent_read_rules": "thesis/figures/AGENT_READ_FIGURES.md",
-  "topic_glossary": {
-    "request_traffic_timeseries": "生产请求量随时延变化（QPS/QPM 折线）",
-    "request_traffic_concentration": "流量在模型间的占比/集中度（非时序）",
-    "request_traffic_peak_valley": "峰谷比、尖峰形态（非求解结果）",
-    "optimization_demand_input": "进入 MILP 的需求矩阵输入",
-    "arrival_distribution_by_slot": "分时段到达随机分布类型选择",
-    "arrival_distribution_fit_example": "单时段 PMF 拟合示例",
-    "arrival_distribution_heterogeneity": "多时段 PMF 形态差异",
-    "arrival_overdispersion": "过离散/相对 Poisson 偏离",
-    "solver_plan_comparison_summary": "两求解方案摘要指标对比",
-    "solver_cost_decomposition": "成本分解",
-    "solver_objective_vs_baseline": "objective 与 cost_base",
-    "solver_lease_dynamics_comparison": "租约/活跃节点时序对比",
-    "solver_migration_stability": "切换与 Σ(u−c)",
-    "solver_single_plan_lease": "单方案租约时间线",
-    "solver_single_plan_scheduling": "单方案调度时间线",
-    "solver_coplacement_and_coldstart": "共置与冷启动",
-    "solver_deployment_matrix_audit": "u 矩阵审计",
-    "solver_sla_capacity_check": "SLA 与有效产能",
-    "solver_sensitivity_lease_count": "长租数敏感性",
-    "solver_feasibility_node_pool": "节点池 N 可行性",
-    "solver_ablation_s_ordered": "s 有序消融",
-    "solver_sa_penalty_ablation": "SA 惩罚项消融",
-    "solver_experiment_figure": "其它第四章实验图"
-  },
+  "schema_version": 2,
+  "index_path": "thesis/figures/descriptions.json",
+  "manifest_path": "thesis/figures/manifest.json",
+  "agent_rules_path": "thesis/figures/AGENT_READ_FIGURES.md",
+  "mapping_csv": "data/raw/newdata/anonymization_mapping.csv",
   "figures": [
     {
       "id": "ch2_multi_qps",
-      "path": "thesis/figures/ch2/ch2_multi_qps.png",
       "caption": "图2-1 九模型分钟级 QPS（8 日，newdata_anonymized）",
+      "path": "thesis/figures/ch2/ch2_multi_qps.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch2/ch2_multi_qps.png",
       "source": "research/demand_inference/scripts/outputs/ch2_211/figures/ch2_multi_qps.png",
       "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
-      "description_id": "ch2_multi_qps",
-      "figure_label": "图2-1",
-      "chapter": 2,
-      "section": "§2.1.1 生产流量形态",
       "topic": "request_traffic_timeseries",
       "purpose": "说明生产环境九模型分钟级请求量（QPS）随时延如何波动，以及模型间量级差异与同相节律；用于论证「负载不稳、需动态调度」，而非展示部署或求解方案。",
       "summary": "九模型 8 日分钟 QPS：头部高基线 + 全体同相日波动。",
@@ -57,18 +26,57 @@
         "CP-SAT/SA 调度结果",
         "成本分解"
       ],
-      "plot_type": "multi_series_time_series"
+      "figure_label": "图2-1",
+      "chapter": 2,
+      "section": "§2.1.1 生产流量形态",
+      "plot_type": "multi_series_time_series",
+      "axes": {
+        "x": "时间（分钟，约 8 日）",
+        "y": "QPS（每分钟请求数）"
+      },
+      "data_source": "data/raw/newdata_anonymized/model_*_qps_*.csv",
+      "provenance": "research/demand_inference/scripts/analyze_ch211_newdata.py",
+      "sample_window": "2026-05-01 00:00 — 2026-05-08 22:58（约 7.96 日），分钟粒度",
+      "models_in_plot": [
+        "model_001",
+        "model_002",
+        "model_003",
+        "model_004",
+        "model_005",
+        "model_006",
+        "model_007",
+        "model_008",
+        "model_009"
+      ],
+      "visual_description": "九条彩色折线叠在同一坐标系，横轴为连续分钟时间戳，纵轴为 QPS。视觉上呈「一条高位厚带（model_003，均值约 17.2 QPS）+ 八条贴近横轴的细线」；各曲线随日历时间同步起伏，可见重复的日周期：约在 0 时附近抬升、约 5 时探底。model_008 为次高平台（均值约 2.9），与其余低位模型差约一个数量级以上。",
+      "key_findings": [
+        "头部 model_003 约占全样本均值流量的 68%，峰值约 60.5 QPS",
+        "九模型强相位同步（model_003 与 model_008 相关约 0.90）",
+        "低位模型更易出现「相对尖峰」（分钟值 > 3× 各自中位数）",
+        "公司线上约 32 模型，本图仅含参与全局调度的 9 个活跃模型"
+      ],
+      "key_numbers": {
+        "model_003_mean_qps": 17.22,
+        "model_008_mean_qps": 2.9,
+        "model_003_traffic_share_pct": 67.9,
+        "model_003_max_qps": 60.5
+      },
+      "related_data": [
+        "research/demand_inference/scripts/outputs/ch2_211/model_traffic_summary.csv"
+      ],
+      "related_figures": [
+        "ch2_head_tail_bar",
+        "ch2_peak_valley"
+      ],
+      "description_id": "ch2_multi_qps"
     },
     {
       "id": "ch2_head_tail_bar",
-      "path": "thesis/figures/ch2/ch2_head_tail_bar.png",
       "caption": "图2-2 九模型均值流量占比",
+      "path": "thesis/figures/ch2/ch2_head_tail_bar.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch2/ch2_head_tail_bar.png",
       "source": "research/demand_inference/scripts/outputs/ch2_211/figures/ch2_head_tail_bar.png",
       "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
-      "description_id": "ch2_head_tail_bar",
-      "figure_label": "图2-2",
-      "chapter": 2,
-      "section": "§2.1.1",
       "topic": "request_traffic_concentration",
       "purpose": "量化九模型流量「一头多尾」的集中程度（均值占比），说明为何静态副本难以均衡，与图2-1 的时序波动互补：本图看结构占比，不看时间轴波动。",
       "summary": "水平条形：model_003 约 68% 均值流量，model_008 约 11%。",
@@ -81,18 +89,36 @@
         "分钟级波动形态",
         "求解器节点分配"
       ],
-      "plot_type": "horizontal_bar"
+      "figure_label": "图2-2",
+      "chapter": 2,
+      "section": "§2.1.1",
+      "plot_type": "horizontal_bar",
+      "axes": {
+        "x": "均值流量占比（%）",
+        "y": "model_001 … model_009"
+      },
+      "data_source": "同上 9 模型分钟 QPS 的样本均值占比",
+      "provenance": "analyze_ch211_newdata.py",
+      "visual_description": "水平条形图：单根最长条为 model_003（约 68%），model_008 约 11%，其余七条合计约 21%。用于强调「一头多尾」的流量结构。",
+      "key_findings": [
+        "均值占比与绝对 QPS 头部效应一致，为后续「静态副本 + 动态调度」动机提供量化依据"
+      ],
+      "key_numbers": {
+        "model_003_share_pct": 67.9,
+        "model_008_share_pct": 11.4
+      },
+      "related_figures": [
+        "ch2_multi_qps"
+      ],
+      "description_id": "ch2_head_tail_bar"
     },
     {
       "id": "ch2_peak_valley",
-      "path": "thesis/figures/ch2/ch2_peak_valley.png",
       "caption": "图2-3 头部 model_003 与代表 model_008 峰谷示例",
+      "path": "thesis/figures/ch2/ch2_peak_valley.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch2/ch2_peak_valley.png",
       "source": "research/demand_inference/scripts/outputs/ch2_211/figures/ch2_peak_valley.png",
       "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
-      "description_id": "ch2_peak_valley",
-      "figure_label": "图2-3",
-      "chapter": 2,
-      "section": "§2.1.1 / §2.1.3",
       "topic": "request_traffic_peak_valley",
       "purpose": "对比头部与高相对波动模型的峰谷比与尖峰形态，说明「同类日周期、不同波动幅度」；支撑 §2.1.3 对极端峰谷与容量需求的叙述，不是 SLA 违约率图。",
       "summary": "双子图：model_003 峰谷比约 18:1，model_008 约 47:1。",
@@ -105,18 +131,38 @@
         "到达分布拟合",
         "优化目标函数值"
       ],
-      "plot_type": "dual_panel_time_series"
+      "figure_label": "图2-3",
+      "chapter": 2,
+      "section": "§2.1.1 / §2.1.3",
+      "plot_type": "dual_panel_time_series",
+      "axes": {
+        "x": "时间（分钟）",
+        "y_top": "model_003 QPS",
+        "y_bottom": "model_008 QPS"
+      },
+      "data_source": "newdata_anonymized 分钟 QPS",
+      "provenance": "analyze_ch211_newdata.py",
+      "visual_description": "上下两个子图：上为头部 model_003（高基线、峰谷比约 18:1），下为代表性突发 model_008（均值低但尖峰突出，峰谷比约 47:1）。用于对比「高基线平滑头部」与「低位高相对波动」两类形态。",
+      "key_findings": [
+        "model_003：min(正流量)≈3.33，max≈60.5，适合作为高负载基线算例",
+        "model_008：映射见 anonymization_mapping；正文仅用 model_008"
+      ],
+      "key_numbers": {
+        "model_003_peak_valley_ratio": 18.2,
+        "model_008_peak_valley_ratio": 47.2
+      },
+      "related_figures": [
+        "ch2_multi_qps"
+      ],
+      "description_id": "ch2_peak_valley"
     },
     {
       "id": "ch3_qpm_anonymized",
-      "path": "thesis/figures/ch3/newdata_anonymized_qps.png",
       "caption": "匿名化模型 QPM 时序（7 日）",
+      "path": "thesis/figures/ch3/newdata_anonymized_qps.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch3/newdata_anonymized_qps.png",
       "source": "research/demand_inference/outputs/qpm/newdata_anonymized_qps.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
-      "description_id": "ch3_qpm_anonymized",
-      "figure_label": "（第三章总览）",
-      "chapter": 3,
-      "section": "§3.2 需求输入",
       "topic": "optimization_demand_input",
       "purpose": "展示进入第三章 MILP 的匿名化需求时序（QPM/QPS），衔接第二章生产流量与优化输入 q[t,m]；说明需求侧数据口径，不是调度可行解。",
       "summary": "匿名化模型需求时序，供 MILP 输入对照。",
@@ -128,18 +174,32 @@
         "到达分布 PMF",
         "节点租约时间线"
       ],
-      "plot_type": "multi_series_time_series"
+      "figure_label": "（第三章总览）",
+      "chapter": 3,
+      "section": "§3.2 需求输入",
+      "plot_type": "multi_series_time_series",
+      "axes": {
+        "x": "时间",
+        "y": "QPM（或 QPS，视导出列）"
+      },
+      "data_source": "data/raw/newdata_anonymized 聚合为 QPM",
+      "provenance": "research/demand_inference/outputs/qpm/",
+      "visual_description": "七模型（或九模型子集）匿名化后的分钟/槽级流量时序，供第三章优化输入口径对照。",
+      "key_findings": [
+        "与第二章 newdata 匿名集一致，作为 MILP 需求矩阵 q[t,m] 的可视化来源"
+      ],
+      "related_figures": [
+        "ch2_multi_qps"
+      ],
+      "description_id": "ch3_qpm_anonymized"
     },
     {
       "id": "ch3_dice_best_dist_summary",
-      "path": "thesis/figures/ch3/dice_best_dist_summary.png",
       "caption": "图3-2a 各 30min slot 最优到达分布类型汇总（dice.csv，1min 子窗口）",
+      "path": "thesis/figures/ch3/dice_best_dist_summary.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch3/dice_best_dist_summary.png",
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_best_dist_summary.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
-      "description_id": "ch3_dice_best_dist_summary",
-      "figure_label": "图3-2a",
-      "chapter": 3,
-      "section": "§3.3.2 到达分布拟合",
       "topic": "arrival_distribution_by_slot",
       "purpose": "说明各 30min 时段应用 Poisson 还是负二项（NB）拟合到达过程；支撑「不宜全局 Poisson、需分 slot 随机到达」的方法选择，不是请求 QPS 折线图。",
       "summary": "48 slot 中最优分布类型汇总，NB 占绝大多数。",
@@ -152,18 +212,39 @@
         "生产九模型 QPS 对比",
         "求解器成本"
       ],
-      "plot_type": "categorical_timeline_heatmap"
+      "figure_label": "图3-2a",
+      "chapter": 3,
+      "section": "§3.3.2 到达分布拟合",
+      "plot_type": "categorical_timeline_heatmap",
+      "axes": {
+        "x": "30min slot（00:00–23:30）",
+        "y": "最优分布类型"
+      },
+      "data_source": "data/raw/dice.csv 请求时间戳",
+      "provenance": "research/demand_inference/scripts/fit_dice_slot_distributions.py",
+      "sample_window": "约 8 日，每 slot 240 个 1min 子窗口计数",
+      "visual_description": "48 个时段各自标注 AIC 最优分布：绝大多数格为负二项 NB（约 44/48），少数低谷 slot 为 Poisson。色块或条带一眼可见「深夜过离散更强」。",
+      "key_findings": [
+        "不宜全局假设 Poisson；NB 占 91.7%",
+        "ZIP 未入选，零膨胀不显著"
+      ],
+      "related_data": [
+        "research/demand_inference/scripts/outputs/dice_poisson/dice_best_distribution.csv"
+      ],
+      "related_figures": [
+        "ch3_dice_pmf_14_16",
+        "ch3_dice_best_dist_all_slots",
+        "ch3_dice_dispersion_summary"
+      ],
+      "description_id": "ch3_dice_best_dist_summary"
     },
     {
       "id": "ch3_dice_pmf_14_16",
-      "path": "thesis/figures/ch3/dice_poisson_pmf_14_16.png",
       "caption": "图3-2b 14:00 slot 经验 PMF 与 NB 拟合（典型高峰 slot）",
+      "path": "thesis/figures/ch3/dice_poisson_pmf_14_16.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch3/dice_poisson_pmf_14_16.png",
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_poisson_pmf_14_16.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
-      "description_id": "ch3_dice_pmf_14_16",
-      "figure_label": "图3-2b",
-      "chapter": 3,
-      "section": "§3.3.2",
       "topic": "arrival_distribution_fit_example",
       "purpose": "以典型高峰 slot（14:00）为例，展示 1min 到达计数经验分布与 NB 拟合曲线吻合；用于压测/仿真到达生成可信度，不是优化调度时间线。",
       "summary": "14:00 经验 PMF + NB 曲线（高峰 slot 范例）。",
@@ -176,18 +257,32 @@
         "全 48 slot 汇总",
         "QPS 时序"
       ],
-      "plot_type": "pmf_bar_with_fitted_curve"
+      "figure_label": "图3-2b",
+      "chapter": 3,
+      "section": "§3.3.2",
+      "plot_type": "pmf_bar_with_fitted_curve",
+      "axes": {
+        "x": "1min 到达计数 k",
+        "y": "概率/频数"
+      },
+      "data_source": "dice.csv 14:00 slot 的 1min 计数",
+      "provenance": "analyze_dice_poisson.py",
+      "visual_description": "柱状为经验 PMF，曲线为 NB 拟合；高峰 slot 下拟合曲线贴近直方图尾部，说明用 NB 做压测到达生成合理。",
+      "key_findings": [
+        "14:00 典型高峰：μ≈54/min，NB 优于 Poisson"
+      ],
+      "related_figures": [
+        "ch3_dice_best_dist_summary"
+      ],
+      "description_id": "ch3_dice_pmf_14_16"
     },
     {
       "id": "ch3_dice_best_dist_all_slots",
-      "path": "thesis/figures/ch3/dice_best_dist_all_slots.png",
       "caption": "图3-3 48 slot 经验 PMF vs 最优理论 PMF（Poisson/NB）",
+      "path": "thesis/figures/ch3/dice_best_dist_all_slots.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch3/dice_best_dist_all_slots.png",
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_best_dist_all_slots.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
-      "description_id": "ch3_dice_best_dist_all_slots",
-      "figure_label": "图3-3",
-      "chapter": 3,
-      "section": "§3.3.2",
       "topic": "arrival_distribution_heterogeneity",
       "purpose": "展示 48 个 slot 经验 PMF 与理论 PMF 的逐格差异，论证到达过程随时段变化、需 slot-wise 参数而非单一全局分布。",
       "summary": "48 宫格 PMF：每 slot 经验 vs Poisson/NB。",
@@ -200,18 +295,32 @@
         "模型间 QPS 相关",
         "租约成本对比"
       ],
-      "plot_type": "small_multiples_pmf"
+      "figure_label": "图3-3",
+      "chapter": 3,
+      "section": "§3.3.2",
+      "plot_type": "small_multiples_pmf",
+      "axes": {
+        "x": "计数 k",
+        "y": "概率（48 子图）"
+      },
+      "data_source": "dice.csv 全 slot",
+      "provenance": "fit_dice_slot_distributions.py / analyze_dice_poisson.py",
+      "visual_description": "48 格小图：每格经验 PMF 点/柱 + 理论 PMF（Poisson 或 NB）。深夜格子的分布更宽、右尾更重；白天高峰更集中。",
+      "key_findings": [
+        "逐 slot 异质性大，需 slot-wise 分布而非全局单一分布"
+      ],
+      "related_figures": [
+        "ch3_dice_dispersion_summary"
+      ],
+      "description_id": "ch3_dice_best_dist_all_slots"
     },
     {
       "id": "ch3_dice_dispersion_summary",
-      "path": "thesis/figures/ch3/dice_poisson_dispersion_summary.png",
       "caption": "图3-4 离散指数 D_t 与 Poisson 拟合优度（48 slot）",
+      "path": "thesis/figures/ch3/dice_poisson_dispersion_summary.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch3/dice_poisson_dispersion_summary.png",
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_poisson_dispersion_summary.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
-      "description_id": "ch3_dice_dispersion_summary",
-      "figure_label": "图3-4",
-      "chapter": 3,
-      "section": "§3.3.2",
       "topic": "arrival_overdispersion",
       "purpose": "用离散指数 D_t=Var/E 说明各 slot 相对 Poisson 的过离散程度；解释为何深夜 burst 强、Poisson 假设不成立，与分布选型图呼应。",
       "summary": "48 slot 的 D_t 与 Poisson 拟合优度对照。",
@@ -224,18 +333,37 @@
         "请求 QPS 折线",
         "求解切换次数"
       ],
-      "plot_type": "dual_metric_by_slot"
+      "figure_label": "图3-4",
+      "chapter": 3,
+      "section": "§3.3.2",
+      "plot_type": "dual_metric_by_slot",
+      "axes": {
+        "x": "slot",
+        "y_left": "离散指数 D_t=Var/E",
+        "y_right": "Poisson 拟合优度（如 χ² p 值或 AIC 差）"
+      },
+      "data_source": "dice.csv 1min 计数",
+      "provenance": "analyze_dice_poisson.py",
+      "visual_description": "沿 48 slot 展示 D_t：多数在 1.2–2.3（轻度过离散），深夜可达 >10。与 Poisson 基准对比显示深夜 slot 最不适合 Poisson。",
+      "key_findings": [
+        "D_t≈1 仅为 Poisson 特例；优化/压测应用 NB 或 slot 混合"
+      ],
+      "related_figures": [
+        "ch3_dice_best_dist_summary"
+      ],
+      "description_id": "ch3_dice_dispersion_summary"
     },
     {
       "id": "ch4_compare_metrics",
-      "path": "thesis/figures/ch4/compare_metrics_bars.png",
       "caption": "CP-SAT 与 SA 方案指标对比",
+      "path": "thesis/figures/ch4/compare_metrics_bars.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_metrics_bars.png",
       "source": "research/model_solver/outputs/compare_standard_600s/compare_metrics_bars.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_metrics",
-      "figure_label": "对比-指标",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT 与 SA 方案指标对比",
       "topic": "solver_plan_comparison_summary",
       "purpose": "对比两种求解方案（如 CP-SAT vs SA）的资源形态摘要：长租节点数 Σs、短租活跃 Σz 等；说明「哪类方案更省节点/更活跃」，不是生产流量波动图。",
       "summary": "对比两种求解方案（如 CP-SAT vs SA）的资源形态摘要：长租节点数 Σs、短租活跃 Σz 等；说明「哪类方案更省节点/更活跃」，不是生产流量波动图。",
@@ -248,18 +376,25 @@
         "分钟 QPS",
         "到达 PMF"
       ],
-      "plot_type": "grouped_bar"
+      "figure_label": "对比-指标",
+      "plot_type": "grouped_bar",
+      "visual_description": "并列柱：CP-SAT vs SA（或两方案标签）的 Σs（长租节点数）、Σz（短租活跃计数）、长租活跃槽等摘要指标。",
+      "key_findings": [
+        "用于快速比较两方案资源形态，需结合同目录 REPORT.md 数值"
+      ],
+      "description_id": "ch4_compare_metrics"
     },
     {
       "id": "ch4_compare_cost",
-      "path": "thesis/figures/ch4/compare_cost_breakdown.png",
       "caption": "成本分解对比",
+      "path": "thesis/figures/ch4/compare_cost_breakdown.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_cost_breakdown.png",
       "source": "research/model_solver/outputs/compare_standard_600s/compare_cost_breakdown.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_cost",
-      "figure_label": "对比-成本",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "成本分解对比",
       "topic": "solver_cost_decomposition",
       "purpose": "分解总成本为长租项、短租项与惩罚项，说明成本驱动因素；不是请求波动。",
       "summary": "分解总成本为长租项、短租项与惩罚项，说明成本驱动因素；不是请求波动。",
@@ -272,18 +407,25 @@
         "QPS 时序",
         "模型切换时间线"
       ],
-      "plot_type": "stacked_or_grouped_bar"
+      "figure_label": "对比-成本",
+      "plot_type": "stacked_or_grouped_bar",
+      "visual_description": "成本分解：长租项、短租项、惩罚项（若有）；对照 cost_base 与 objective。",
+      "key_findings": [
+        "cost_base = p_long·T·(N−Σs) + p_short·Σz"
+      ],
+      "description_id": "ch4_compare_cost"
     },
     {
       "id": "ch4_compare_objective",
-      "path": "thesis/figures/ch4/compare_objective_vs_base.png",
       "caption": "相对基线目标值对比",
+      "path": "thesis/figures/ch4/compare_objective_vs_base.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_objective_vs_base.png",
       "source": "research/model_solver/outputs/compare_standard_600s/compare_objective_vs_base.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_objective",
-      "figure_label": "对比-目标",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "相对基线目标值对比",
       "topic": "solver_objective_vs_baseline",
       "purpose": "对照各方案 cost_base 与求解器 objective，显示惩罚/附加项带来的差额。",
       "summary": "对照各方案 cost_base 与求解器 objective，显示惩罚/附加项带来的差额。",
@@ -296,18 +438,22 @@
         "到达分布",
         "流量占比"
       ],
-      "plot_type": "bar"
+      "figure_label": "对比-目标",
+      "plot_type": "bar",
+      "visual_description": "各方案 cost_base 与求解器 objective 并排；objective−base 反映 α·长租活跃等附加项。",
+      "description_id": "ch4_compare_objective"
     },
     {
       "id": "ch4_compare_lease",
-      "path": "thesis/figures/ch4/compare_lease_timeline.png",
       "caption": "长租/短租节点时间线对比",
+      "path": "thesis/figures/ch4/compare_lease_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_lease_timeline.png",
       "source": "research/model_solver/outputs/compare_standard_600s/compare_lease_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_lease",
-      "figure_label": "对比-租约",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "长租/短租节点时间线对比",
       "topic": "solver_lease_dynamics_comparison",
       "purpose": "对比两方案在 48 个时间槽上长租/短租活跃节点数如何随负载变化；说明租约策略差异，不是 QPS 曲线。",
       "summary": "对比两方案在 48 个时间槽上长租/短租活跃节点数如何随负载变化；说明租约策略差异，不是 QPS 曲线。",
@@ -320,18 +466,29 @@
         "请求 PMF",
         "部署副本表"
       ],
-      "plot_type": "stacked_area_or_step"
+      "figure_label": "对比-租约",
+      "plot_type": "stacked_area_or_step",
+      "axes": {
+        "x": "时间槽 t（30min）",
+        "y": "活跃节点数"
+      },
+      "visual_description": "两方案的长租/短租活跃节点数随时间变化；深色/暖色区分长租与按需。",
+      "key_findings": [
+        "观察高峰槽是否集中启用短租、长租是否覆盖稳定负载"
+      ],
+      "description_id": "ch4_compare_lease"
     },
     {
       "id": "ch4_compare_switch",
-      "path": "thesis/figures/ch4/compare_switch_metrics.png",
       "caption": "模型切换指标对比",
+      "path": "thesis/figures/ch4/compare_switch_metrics.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_switch_metrics.png",
       "source": "research/model_solver/outputs/compare_cpsat_vs_sa/compare_switch_metrics.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_switch",
-      "figure_label": "对比-切换",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "模型切换指标对比",
       "topic": "solver_migration_stability",
       "purpose": "对比 Σ(u−c) 与模型切换次数，说明方案在共置/迁移上的稳定性；不是流量波动。",
       "summary": "对比 Σ(u−c) 与模型切换次数，说明方案在共置/迁移上的稳定性；不是流量波动。",
@@ -344,18 +501,25 @@
         "QPS 尖峰",
         "分布拟合 AIC"
       ],
-      "plot_type": "grouped_bar"
+      "figure_label": "对比-切换",
+      "plot_type": "grouped_bar",
+      "visual_description": "Σ(u−c) 与模型切换次数（可拆短租/长租侧）；切换定义见 compare REPORT。",
+      "key_findings": [
+        "CP-SAT 典型切换少于 SA；Σ(u−c) 衡量相对滑动窗口底的抬升"
+      ],
+      "description_id": "ch4_compare_switch"
     },
     {
       "id": "ch4_cpsat_lease",
-      "path": "thesis/figures/ch4/cpsat_lease_usage_timeline.png",
       "caption": "CP-SAT 租约使用时间线（脱敏 9 模型，600s）",
+      "path": "thesis/figures/ch4/cpsat_lease_usage_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_lease_usage_timeline.png",
       "source": "research/model_solver/outputs/run_cpsat/lease_usage_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_cpsat_lease",
-      "figure_label": "CP-SAT-租约",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT 租约使用时间线（脱敏 9 模型，600s）",
       "topic": "solver_single_plan_lease",
       "purpose": "单方案（CP-SAT）下各节点长租/短租属性随时间槽的分布；审计租约决策。",
       "summary": "单方案（CP-SAT）下各节点长租/短租属性随时间槽的分布；审计租约决策。",
@@ -367,18 +531,22 @@
         "两方案对比柱图",
         "生产流量"
       ],
-      "plot_type": "node_timeline_lease_stripe"
+      "figure_label": "CP-SAT-租约",
+      "plot_type": "node_timeline_lease_stripe",
+      "visual_description": "每行一节点，横轴时间槽；条带颜色区分长租/短租；展示 Σs 与 z 的时间分布。",
+      "description_id": "ch4_cpsat_lease"
     },
     {
       "id": "ch4_cpsat_node_timeline",
-      "path": "thesis/figures/ch4/cpsat_node_model_timeline.png",
       "caption": "CP-SAT 节点—模型调度时间线（主导模型/长租短租）",
+      "path": "thesis/figures/ch4/cpsat_node_model_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_node_model_timeline.png",
       "source": "research/model_solver/outputs/run_cpsat/node_model_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_cpsat_node_timeline",
-      "figure_label": "CP-SAT-调度",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT 节点—模型调度时间线（主导模型/长租短租）",
       "topic": "solver_single_plan_scheduling",
       "purpose": "单方案节点—主导模型随时间变化，展示调度轨迹与切换；不是请求 QPS。",
       "summary": "单方案节点—主导模型随时间变化，展示调度轨迹与切换；不是请求 QPS。",
@@ -391,18 +559,22 @@
         "到达计数 PMF",
         "流量占比条形图"
       ],
-      "plot_type": "node_model_timeline"
+      "figure_label": "CP-SAT-调度",
+      "plot_type": "node_model_timeline",
+      "visual_description": "节点×时间热力/色块：每格 dominant model（argmax_m u）；可见共置与切换轨迹。",
+      "description_id": "ch4_cpsat_node_timeline"
     },
     {
       "id": "ch4_cpsat_coplacement_timeline",
-      "path": "thesis/figures/ch4/cpsat_node_coplacement_timeline.png",
       "caption": "CP-SAT 节点共置时间线（按 device_num 分条，脱敏 9 模型，600s）",
+      "path": "thesis/figures/ch4/cpsat_node_coplacement_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_node_coplacement_timeline.png",
       "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_cpsat_coplacement_timeline",
-      "figure_label": "CP-SAT-共置",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT 节点共置时间线（按 device_num 分条，脱敏 9 模型，600s）",
       "topic": "solver_coplacement_and_coldstart",
       "purpose": "展示同节点多模型共置与冷启动（c<u 斜线）时段；说明容量与迁移代价结构。",
       "summary": "展示同节点多模型共置与冷启动（c<u 斜线）时段；说明容量与迁移代价结构。",
@@ -415,18 +587,22 @@
         "请求波动",
         "成本分解"
       ],
-      "plot_type": "node_coplacement_timeline"
+      "figure_label": "CP-SAT-共置",
+      "plot_type": "node_coplacement_timeline",
+      "visual_description": "按 device_num 分条；一格多色表示同节点多模型实例 u>0；斜线区表示冷启动 c<u。",
+      "description_id": "ch4_cpsat_coplacement_timeline"
     },
     {
       "id": "ch4_cpsat_u_heatmap",
-      "path": "thesis/figures/ch4/cpsat_u_matrices_heatmap.png",
       "caption": "CP-SAT 各时间片模型×节点部署热力图",
+      "path": "thesis/figures/ch4/cpsat_u_matrices_heatmap.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_u_matrices_heatmap.png",
       "source": "research/model_solver/outputs/run_cpsat/u_matrices_heatmap.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_cpsat_u_heatmap",
-      "figure_label": "CP-SAT-u矩阵",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT 各时间片模型×节点部署热力图",
       "topic": "solver_deployment_matrix_audit",
       "purpose": "逐时间片 M×N 部署矩阵 u[t,m,n] 热力图，用于检查可行性与覆盖空洞。",
       "summary": "逐时间片 M×N 部署矩阵 u[t,m,n] 热力图，用于检查可行性与覆盖空洞。",
@@ -439,18 +615,22 @@
         "QPS 折线",
         "SA 搜索轨迹"
       ],
-      "plot_type": "heatmap_small_multiples"
+      "figure_label": "CP-SAT-u矩阵",
+      "plot_type": "heatmap_small_multiples",
+      "visual_description": "每个时间片一张 M×N 热力图，颜色深度为 u[t,m,n]；用于审计可行性覆盖与空洞。",
+      "description_id": "ch4_cpsat_u_heatmap"
     },
     {
       "id": "ch4_cpsat_per_model_qpm",
-      "path": "thesis/figures/ch4/cpsat_per_model_qpm_vs_p99.png",
       "caption": "CP-SAT 分模型有效产能与 SLA 需求下界（α=1，s有序）",
+      "path": "thesis/figures/ch4/cpsat_per_model_qpm_vs_p99.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_per_model_qpm_vs_p99.png",
       "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/per_model_qpm_vs_p99.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_cpsat_per_model_qpm",
-      "figure_label": "CP-SAT-分模型产能",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT 分模型有效产能与 SLA 需求下界（α=1，s有序）",
       "topic": "solver_sla_capacity_check",
       "purpose": "分模型对比有效供给与 SLA 需求下界 q_demand，验证是否满足容量约束；不是流量波动图。",
       "summary": "分模型对比有效供给与 SLA 需求下界 q_demand，验证是否满足容量约束；不是流量波动图。",
@@ -463,18 +643,22 @@
         "到达分布",
         "租约对比"
       ],
-      "plot_type": "line_or_bar_per_model"
+      "figure_label": "CP-SAT-分模型产能",
+      "plot_type": "line_or_bar_per_model",
+      "visual_description": "各模型有效供给（QPM）与 SLA 需求下界 q_demand 对比；检验 α=1 下是否逐模型满足。",
+      "description_id": "ch4_cpsat_per_model_qpm"
     },
     {
       "id": "ch4_sa_lease_sweep",
-      "path": "thesis/figures/ch4/sa_lease_sweep.png",
       "caption": "SA 阶梯法长租数 K 扫描",
+      "path": "thesis/figures/ch4/sa_lease_sweep.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/sa_lease_sweep.png",
       "source": "research/model_solver/outputs/sa_lease_sweep_300/lease_sweep.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_sa_lease_sweep",
-      "figure_label": "SA-K扫描",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "SA 阶梯法长租数 K 扫描",
       "topic": "solver_sensitivity_lease_count",
       "purpose": "SA 阶梯法扫描长租节点数 K 对 cost/可行性的敏感性；方法调参，不是生产流量。",
       "summary": "SA 阶梯法扫描长租节点数 K 对 cost/可行性的敏感性；方法调参，不是生产流量。",
@@ -487,18 +671,22 @@
         "CP-SAT vs SA 柱图",
         "QPS 时序"
       ],
-      "plot_type": "line_sweep"
+      "figure_label": "SA-K扫描",
+      "plot_type": "line_sweep",
+      "visual_description": "横轴长租数 K，纵轴 cost 或可行率；SA 阶梯法选 K 的敏感性。",
+      "description_id": "ch4_sa_lease_sweep"
     },
     {
       "id": "ch4_n_feasibility",
-      "path": "thesis/figures/ch4/n_sweep.png",
       "caption": "节点池规模 N 可行性扫描",
+      "path": "thesis/figures/ch4/n_sweep.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/n_sweep.png",
       "source": "research/model_solver/outputs/n_feasibility_smoke/n_sweep.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_n_feasibility",
-      "figure_label": "N-可行性",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "节点池规模 N 可行性扫描",
       "topic": "solver_feasibility_node_pool",
       "purpose": "扫描节点池规模 N 对求解可行性与目标的影响，标定最小可行 N。",
       "summary": "扫描节点池规模 N 对求解可行性与目标的影响，标定最小可行 N。",
@@ -511,17 +699,22 @@
         "请求波动",
         "分布 PMF"
       ],
-      "plot_type": "line_or_scatter"
+      "figure_label": "N-可行性",
+      "plot_type": "line_or_scatter",
+      "visual_description": "节点池规模 N 与求解状态/目标；标出最小可行 N 邻域。",
+      "description_id": "ch4_n_feasibility"
     },
     {
       "id": "ch4_la1_s_ordered_node_timeline",
-      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_node_model_timeline.png",
       "caption": "CP-SAT α=1+s有序：节点—模型调度时间线（15 长租 + 17 按需）",
+      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_node_model_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_la1_s_ordered_node_model_timeline.png",
       "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/node_model_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_la1_s_ordered_node_timeline",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT α=1+s有序：节点—模型调度时间线（15 长租 + 17 按需）",
       "topic": "solver_single_plan_scheduling",
       "purpose": "论文主结果的节点—模型调度时间线，展示推荐 CP-SAT 解的时序结构。",
       "summary": "论文主结果的节点—模型调度时间线，展示推荐 CP-SAT 解的时序结构。",
@@ -533,17 +726,24 @@
         "生产九模型 QPS",
         "dice 到达 PMF"
       ],
-      "plot_type": "timeline"
+      "plot_type": "timeline",
+      "visual_description": "推荐论文主结果：α=1、迁移有序、600s 墙钟；15 长租 + 17 短租典型。",
+      "key_findings": [
+        "与 compare_standard_600s REPORT 对齐"
+      ],
+      "description_id": "ch4_la1_s_ordered_node_timeline"
     },
     {
       "id": "ch4_la1_s_ordered_coplacement",
-      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_coplacement_cs.png",
       "caption": "CP-SAT α=1+s有序：节点共置（斜线=冷启动 c<u）",
+      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_coplacement_cs.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_la1_s_ordered_coplacement_cs.png",
       "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_la1_s_ordered_coplacement",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT α=1+s有序：节点共置（斜线=冷启动 c<u）",
       "topic": "solver_coplacement_and_coldstart",
       "purpose": "论文主结果（α=1+s 有序）的共置与冷启动时间线，展示推荐方案的实例布局。",
       "summary": "论文主结果（α=1+s 有序）的共置与冷启动时间线，展示推荐方案的实例布局。",
@@ -555,17 +755,24 @@
         "生产九模型 QPS",
         "dice 到达 PMF"
       ],
-      "plot_type": "timeline"
+      "plot_type": "timeline",
+      "visual_description": "推荐论文主结果：α=1、迁移有序、600s 墙钟；15 长租 + 17 短租典型。",
+      "key_findings": [
+        "与 compare_standard_600s REPORT 对齐"
+      ],
+      "description_id": "ch4_la1_s_ordered_coplacement"
     },
     {
       "id": "ch4_la1_s_ordered_lease",
-      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_lease_usage_timeline.png",
       "caption": "CP-SAT α=1+s有序：租约使用时间线",
+      "path": "thesis/figures/ch4/cpsat_la1_s_ordered_lease_usage_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/cpsat_la1_s_ordered_lease_usage_timeline.png",
       "source": "research/model_solver/outputs/run_cpsat_la1_s_ordered/lease_usage_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_la1_s_ordered_lease",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "CP-SAT α=1+s有序：租约使用时间线",
       "topic": "solver_single_plan_lease",
       "purpose": "论文主结果的租约使用时间线（15 长租 + 17 短租典型），非流量波动。",
       "summary": "论文主结果的租约使用时间线（15 长租 + 17 短租典型），非流量波动。",
@@ -577,17 +784,24 @@
         "生产九模型 QPS",
         "dice 到达 PMF"
       ],
-      "plot_type": "timeline"
+      "plot_type": "timeline",
+      "visual_description": "推荐论文主结果：α=1、迁移有序、600s 墙钟；15 长租 + 17 短租典型。",
+      "key_findings": [
+        "与 compare_standard_600s REPORT 对齐"
+      ],
+      "description_id": "ch4_la1_s_ordered_lease"
     },
     {
       "id": "ch4_compare_la1_s_ordered_metrics",
-      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_metrics.png",
       "caption": "α=1 无约束 vs s有序：指标对比",
+      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_metrics.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_la1_vs_s_ordered_metrics.png",
       "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_metrics_bars.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_la1_s_ordered_metrics",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "α=1 无约束 vs s有序：指标对比",
       "topic": "solver_ablation_s_ordered",
       "purpose": "对比 α=1 下是否施加迁移有序约束 s 对指标/切换/租约的影响；消融实验。",
       "summary": "α=1 无 s 序 vs s 有序：指标/切换/租约对比。",
@@ -600,17 +814,24 @@
         "生产 QPS",
         "到达 NB 拟合"
       ],
-      "plot_type": "grouped_bar"
+      "plot_type": "grouped_bar",
+      "visual_description": "α=1 无 s 序约束 vs α=1+s 有序：指标/切换/租约对比。",
+      "key_findings": [
+        "s 有序降低切换与 Σ(u−c)，可能略增 cost_base"
+      ],
+      "description_id": "ch4_compare_la1_s_ordered_metrics"
     },
     {
       "id": "ch4_compare_la1_s_ordered_switch",
-      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_switch.png",
       "caption": "α=1 无约束 vs s有序：切换与 Σ(u−c)",
+      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_switch.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_la1_vs_s_ordered_switch.png",
       "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_switch_metrics.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_la1_s_ordered_switch",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "α=1 无约束 vs s有序：切换与 Σ(u−c)",
       "topic": "solver_ablation_s_ordered",
       "purpose": "对比 α=1 下是否施加迁移有序约束 s 对指标/切换/租约的影响；消融实验。",
       "summary": "α=1 无 s 序 vs s 有序：指标/切换/租约对比。",
@@ -623,17 +844,24 @@
         "生产 QPS",
         "到达 NB 拟合"
       ],
-      "plot_type": "grouped_bar"
+      "plot_type": "grouped_bar",
+      "visual_description": "α=1 无 s 序约束 vs α=1+s 有序：指标/切换/租约对比。",
+      "key_findings": [
+        "s 有序降低切换与 Σ(u−c)，可能略增 cost_base"
+      ],
+      "description_id": "ch4_compare_la1_s_ordered_switch"
     },
     {
       "id": "ch4_compare_la1_s_ordered_lease",
-      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_lease.png",
       "caption": "α=1 无约束 vs s有序：长租/按需活跃节点时序",
+      "path": "thesis/figures/ch4/compare_la1_vs_s_ordered_lease.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_la1_vs_s_ordered_lease.png",
       "source": "research/model_solver/outputs/compare_la1_vs_s_ordered/compare_lease_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_la1_s_ordered_lease",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "α=1 无约束 vs s有序：长租/按需活跃节点时序",
       "topic": "solver_ablation_s_ordered",
       "purpose": "对比 α=1 下是否施加迁移有序约束 s 对指标/切换/租约的影响；消融实验。",
       "summary": "α=1 无 s 序 vs s 有序：指标/切换/租约对比。",
@@ -646,17 +874,24 @@
         "生产 QPS",
         "到达 NB 拟合"
       ],
-      "plot_type": "grouped_bar"
+      "plot_type": "grouped_bar",
+      "visual_description": "α=1 无 s 序约束 vs α=1+s 有序：指标/切换/租约对比。",
+      "key_findings": [
+        "s 有序降低切换与 Σ(u−c)，可能略增 cost_base"
+      ],
+      "description_id": "ch4_compare_la1_s_ordered_lease"
     },
     {
       "id": "ch4_compare_sa_trace",
-      "path": "thesis/figures/ch4/compare_sa_trace.png",
       "caption": "SA 无惩罚 vs α=1：搜索轨迹（cost 与接受率）",
+      "path": "thesis/figures/ch4/compare_sa_trace.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_sa_trace.png",
       "source": "research/model_solver/outputs/compare_sa_vs_sa_la1/compare_sa_trace.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_sa_trace",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "SA 无惩罚 vs α=1：搜索轨迹（cost 与接受率）",
       "topic": "solver_sa_penalty_ablation",
       "purpose": "对比 SA 无惩罚 vs SA α=1（或含搜索轨迹），说明惩罚项对解质量与搜索过程的作用。",
       "summary": "SA 无惩罚 vs α=1：cost/接受率轨迹",
@@ -669,17 +904,24 @@
         "请求流量",
         "分布拟合"
       ],
-      "plot_type": "grouped_bar_or_trace"
+      "plot_type": "grouped_bar_or_trace",
+      "visual_description": "SA 无惩罚 vs SA α=1 对比；trace 图为 cost/接受率迭代。",
+      "key_findings": [
+        "以 result.json 与 REPORT.md 为准核对数值"
+      ],
+      "description_id": "ch4_compare_sa_trace"
     },
     {
       "id": "ch4_compare_sa_vs_sa_la1_metrics",
-      "path": "thesis/figures/ch4/compare_sa_vs_sa_la1_metrics.png",
       "caption": "SA 无惩罚 vs α=1：指标对比",
+      "path": "thesis/figures/ch4/compare_sa_vs_sa_la1_metrics.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_sa_vs_sa_la1_metrics.png",
       "source": "research/model_solver/outputs/compare_sa_vs_sa_la1/compare_metrics_bars.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_sa_vs_sa_la1_metrics",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "SA 无惩罚 vs α=1：指标对比",
       "topic": "solver_sa_penalty_ablation",
       "purpose": "对比 SA 无惩罚 vs SA α=1（或含搜索轨迹），说明惩罚项对解质量与搜索过程的作用。",
       "summary": "SA 无惩罚 vs α=1：指标对比",
@@ -692,17 +934,24 @@
         "请求流量",
         "分布拟合"
       ],
-      "plot_type": "grouped_bar_or_trace"
+      "plot_type": "grouped_bar_or_trace",
+      "visual_description": "SA 无惩罚 vs SA α=1 对比；trace 图为 cost/接受率迭代。",
+      "key_findings": [
+        "以 result.json 与 REPORT.md 为准核对数值"
+      ],
+      "description_id": "ch4_compare_sa_vs_sa_la1_metrics"
     },
     {
       "id": "ch4_compare_sa_vs_sa_la1_lease",
-      "path": "thesis/figures/ch4/compare_sa_vs_sa_la1_lease.png",
       "caption": "SA 无惩罚 vs α=1：长租/按需活跃节点时序",
+      "path": "thesis/figures/ch4/compare_sa_vs_sa_la1_lease.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/compare_sa_vs_sa_la1_lease.png",
       "source": "research/model_solver/outputs/compare_sa_vs_sa_la1/compare_lease_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_compare_sa_vs_sa_la1_lease",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "SA 无惩罚 vs α=1：长租/按需活跃节点时序",
       "topic": "solver_sa_penalty_ablation",
       "purpose": "对比 SA 无惩罚 vs SA α=1（或含搜索轨迹），说明惩罚项对解质量与搜索过程的作用。",
       "summary": "SA 无惩罚 vs α=1：指标对比",
@@ -715,17 +964,24 @@
         "请求流量",
         "分布拟合"
       ],
-      "plot_type": "grouped_bar_or_trace"
+      "plot_type": "grouped_bar_or_trace",
+      "visual_description": "SA 无惩罚 vs SA α=1 对比；trace 图为 cost/接受率迭代。",
+      "key_findings": [
+        "以 result.json 与 REPORT.md 为准核对数值"
+      ],
+      "description_id": "ch4_compare_sa_vs_sa_la1_lease"
     },
     {
       "id": "ch4_sa_la1_coplacement",
-      "path": "thesis/figures/ch4/sa_la1_node_coplacement_timeline.png",
       "caption": "SA α=1：节点共置时间线",
+      "path": "thesis/figures/ch4/sa_la1_node_coplacement_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/sa_la1_node_coplacement_timeline.png",
       "source": "research/model_solver/outputs/run_sa_la1/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_sa_la1_coplacement",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "SA α=1：节点共置时间线",
       "topic": "solver_coplacement_and_coldstart",
       "purpose": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
       "summary": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
@@ -737,17 +993,24 @@
         "QPS 波动",
         "成本分解"
       ],
-      "plot_type": "node_coplacement_timeline"
+      "plot_type": "node_coplacement_timeline",
+      "visual_description": "共置时间线；斜线填充=冷启动期（c<u）。",
+      "key_findings": [
+        "以 result.json 与 REPORT.md 为准核对数值"
+      ],
+      "description_id": "ch4_sa_la1_coplacement"
     },
     {
       "id": "ch4_sa_standard_coplacement",
-      "path": "thesis/figures/ch4/sa_standard_node_coplacement_timeline.png",
       "caption": "模拟退火（α=1，s有序，600s）：节点共置时间线",
+      "path": "thesis/figures/ch4/sa_standard_node_coplacement_timeline.png",
+      "raw_url": "https://raw.githubusercontent.com/wcwuwc/exp1-thesis-figures/main/thesis/figures/ch4/sa_standard_node_coplacement_timeline.png",
       "source": "research/model_solver/outputs/run_SA_alpha1_600s_migrate_s_ordered/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
-      "description_id": "ch4_sa_standard_coplacement",
       "chapter": 4,
       "section": "§4 模型求解与实验",
+      "provenance": "manifest `source` → research/model_solver/outputs/",
+      "caption_echo": "模拟退火（α=1，s有序，600s）：节点共置时间线",
       "topic": "solver_coplacement_and_coldstart",
       "purpose": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
       "summary": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
@@ -759,7 +1022,12 @@
         "QPS 波动",
         "成本分解"
       ],
-      "plot_type": "node_coplacement_timeline"
+      "plot_type": "node_coplacement_timeline",
+      "visual_description": "共置时间线；斜线填充=冷启动期（c<u）。",
+      "key_findings": [
+        "以 result.json 与 REPORT.md 为准核对数值"
+      ],
+      "description_id": "ch4_sa_standard_coplacement"
     }
   ]
 }
