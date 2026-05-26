@@ -1,9 +1,9 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "index_path": "thesis/figures/descriptions.json",
   "manifest_path": "thesis/figures/manifest.json",
   "agent_rules_path": "thesis/figures/AGENT_READ_FIGURES.md",
-  "mapping_csv": "data/raw/newdata/anonymization_mapping.csv",
+  "semantics_source": "thesis/scripts/figure_semantics.py",
   "figures": [
     {
       "id": "ch2_multi_qps",
@@ -13,18 +13,20 @@
       "source": "research/demand_inference/scripts/outputs/ch2_211/figures/ch2_multi_qps.png",
       "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
       "topic": "request_traffic_timeseries",
-      "purpose": "说明生产环境九模型分钟级请求量（QPS）随时延如何波动，以及模型间量级差异与同相节律；用于论证「负载不稳、需动态调度」，而非展示部署或求解方案。",
-      "summary": "九模型 8 日分钟 QPS：头部高基线 + 全体同相日波动。",
+      "purpose": "呈现九模型在约 8 日窗口内的分钟级 QPS 全貌，作为 §2.1.1 的「现象底图」。",
+      "argument": "生产请求负载并非平稳常数：存在强日内周期、模型间量级悬殊、以及高位曲线与低位曲线的同相联动；因此仅靠静态副本数无法覆盖峰谷，需要按时段调节算力。",
+      "content_detail": "【画面构成】横轴为连续分钟（2026-05-01 00:00 至 05-08 22:58），纵轴为 QPS；九条折线同图。model_003 构成唯一高位厚带（均值约 17.2，峰值约 60.5），model_008 为次高平台（均值约 2.9），其余七条贴近横轴（约 0.27～1.6 QPS）。\n【应看到的规律】① 所有曲线同步起伏，约在 0 时附近偏高、5 时附近探底，日振幅约 4～7 倍；② 不是「同一量纲上的小噪声」，而是「一条主导曲线 + 多条长尾」；③ 低位线偶发向上尖刺（相对中位数 >3× 的分钟占比高于 model_003）。\n【论文衔接】支撑问题背景：多模型共享时钟、流量极不均衡、波动可预测但幅度大；为后文全局调度与 SLA 容量建模提供经验动机。数据：newdata_anonymized，9 个活跃模型。",
+      "summary": "九模型分钟 QPS：强日周期、一头多尾、曲线同相。",
       "illustrates": [
-        "请求到达波动",
-        "日内周期（约 0 点峰、5 点谷）",
-        "模型间流量不同步量级",
-        "多模型相位联动"
+        "请求量时序波动",
+        "日内节律",
+        "头部/长尾量级差",
+        "多模型同相联动"
       ],
       "not_about": [
-        "GPU 副本数",
-        "CP-SAT/SA 调度结果",
-        "成本分解"
+        "GPU 部署拓扑",
+        "优化调度解",
+        "成本/租约"
       ],
       "figure_label": "图2-1",
       "chapter": 2,
@@ -37,23 +39,11 @@
       "data_source": "data/raw/newdata_anonymized/model_*_qps_*.csv",
       "provenance": "research/demand_inference/scripts/analyze_ch211_newdata.py",
       "sample_window": "2026-05-01 00:00 — 2026-05-08 22:58（约 7.96 日），分钟粒度",
-      "models_in_plot": [
-        "model_001",
-        "model_002",
-        "model_003",
-        "model_004",
-        "model_005",
-        "model_006",
-        "model_007",
-        "model_008",
-        "model_009"
-      ],
-      "visual_description": "九条彩色折线叠在同一坐标系，横轴为连续分钟时间戳，纵轴为 QPS。视觉上呈「一条高位厚带（model_003，均值约 17.2 QPS）+ 八条贴近横轴的细线」；各曲线随日历时间同步起伏，可见重复的日周期：约在 0 时附近抬升、约 5 时探底。model_008 为次高平台（均值约 2.9），与其余低位模型差约一个数量级以上。",
+      "visual_description": "九条彩色折线：model_003 高位厚带（均值约 17.2 QPS，峰约 60.5），model_008 次高（约 2.9），其余七条近零轴；全体呈 0 点峰、5 点谷的日周期。",
       "key_findings": [
-        "头部 model_003 约占全样本均值流量的 68%，峰值约 60.5 QPS",
-        "九模型强相位同步（model_003 与 model_008 相关约 0.90）",
-        "低位模型更易出现「相对尖峰」（分钟值 > 3× 各自中位数）",
-        "公司线上约 32 模型，本图仅含参与全局调度的 9 个活跃模型"
+        "model_003 均值流量占比约 68%",
+        "model_003 与 model_008 相关约 0.90",
+        "低位模型相对尖峰分钟占比更高"
       ],
       "key_numbers": {
         "model_003_mean_qps": 17.22,
@@ -78,31 +68,24 @@
       "source": "research/demand_inference/scripts/outputs/ch2_211/figures/ch2_head_tail_bar.png",
       "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
       "topic": "request_traffic_concentration",
-      "purpose": "量化九模型流量「一头多尾」的集中程度（均值占比），说明为何静态副本难以均衡，与图2-1 的时序波动互补：本图看结构占比，不看时间轴波动。",
-      "summary": "水平条形：model_003 约 68% 均值流量，model_008 约 11%。",
+      "purpose": "把图2-1 的时序现象压缩为「谁占了多少平均流量」，突出结构不均衡。",
+      "argument": "算力与副本若按「均匀假设」配置会系统性浪费或不足：约七成均值流量集中在 model_003，次头部 model_008 仅约一成，其余七模型合计约两成——必须用差异化容量策略。",
+      "content_detail": "【画面构成】水平条形图，每根条对应一个 model_00x，长度为 8 日样本的均值 QPS 占比（%）。model_003 条最长（约 67.9%），model_008 次之（约 11.4%），其余条很短。\n【应看到的规律】占比排序与图2-1 的视觉高度一致；不存在「九模型均分」；长尾多模型合计仍不可忽略（约 21%），不能被完全忽视。\n【论文衔接】解释为何「静态副本 + 固定配比」难以同时满足头部与长尾；与优化章「分模型需求 q[t,m]」的输入假设一致。",
+      "summary": "均值占比：model_003≈68%，model_008≈11%。",
       "illustrates": [
         "流量集中度",
-        "头部 model 占比",
-        "长尾模型份额"
+        "均值占比",
+        "一头多尾结构"
       ],
       "not_about": [
-        "分钟级波动形态",
+        "时间轴波动细节",
         "求解器节点分配"
       ],
       "figure_label": "图2-2",
       "chapter": 2,
       "section": "§2.1.1",
       "plot_type": "horizontal_bar",
-      "axes": {
-        "x": "均值流量占比（%）",
-        "y": "model_001 … model_009"
-      },
-      "data_source": "同上 9 模型分钟 QPS 的样本均值占比",
-      "provenance": "analyze_ch211_newdata.py",
-      "visual_description": "水平条形图：单根最长条为 model_003（约 68%），model_008 约 11%，其余七条合计约 21%。用于强调「一头多尾」的流量结构。",
-      "key_findings": [
-        "均值占比与绝对 QPS 头部效应一致，为后续「静态副本 + 动态调度」动机提供量化依据"
-      ],
+      "visual_description": "水平条：model_003≈68%，model_008≈11%，其余合计≈21%。",
       "key_numbers": {
         "model_003_share_pct": 67.9,
         "model_008_share_pct": 11.4
@@ -120,33 +103,24 @@
       "source": "research/demand_inference/scripts/outputs/ch2_211/figures/ch2_peak_valley.png",
       "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
       "topic": "request_traffic_peak_valley",
-      "purpose": "对比头部与高相对波动模型的峰谷比与尖峰形态，说明「同类日周期、不同波动幅度」；支撑 §2.1.3 对极端峰谷与容量需求的叙述，不是 SLA 违约率图。",
-      "summary": "双子图：model_003 峰谷比约 18:1，model_008 约 47:1。",
+      "purpose": "用两个代表模型把「峰谷比」与「尖峰形态」讲透，服务 §2.1.3 容量/峰谷叙述。",
+      "argument": "同一昼夜节律下，头部与高相对波动模型的风险不同：前者是高基线型（绝对峰值高），后者是低位突发型（峰谷比极大）；容量规划必须同时防「高平台」与「相对尖峰」。",
+      "content_detail": "【画面构成】上下两个子图，同一横轴（分钟）。上：model_003 QPS；下：model_008 QPS。\n【应看到的规律】上子图基线高（正流量最小约 3.33 QPS），波动绝对值大，峰谷比约 18:1；下子图基线低但尖刺更醒目，峰值可达约 18.9 QPS，峰谷比约 47:1。\n【论文衔接】为 SLA/容量方法提供「极端但类型不同」的实例；与 model_004/model_007 等「相对尖峰」文字描述互证。",
+      "summary": "model_003 高基线峰谷；model_008 低位高相对波动。",
       "illustrates": [
-        "峰谷比差异",
-        "高基线 vs 低位尖峰",
-        "代表性突发序列"
+        "峰谷比",
+        "高基线头部",
+        "低位尖峰代表"
       ],
       "not_about": [
-        "到达分布拟合",
-        "优化目标函数值"
+        "到达分布 PMF",
+        "objective 对比"
       ],
       "figure_label": "图2-3",
       "chapter": 2,
       "section": "§2.1.1 / §2.1.3",
       "plot_type": "dual_panel_time_series",
-      "axes": {
-        "x": "时间（分钟）",
-        "y_top": "model_003 QPS",
-        "y_bottom": "model_008 QPS"
-      },
-      "data_source": "newdata_anonymized 分钟 QPS",
-      "provenance": "analyze_ch211_newdata.py",
-      "visual_description": "上下两个子图：上为头部 model_003（高基线、峰谷比约 18:1），下为代表性突发 model_008（均值低但尖峰突出，峰谷比约 47:1）。用于对比「高基线平滑头部」与「低位高相对波动」两类形态。",
-      "key_findings": [
-        "model_003：min(正流量)≈3.33，max≈60.5，适合作为高负载基线算例",
-        "model_008：映射见 anonymization_mapping；正文仅用 model_008"
-      ],
+      "visual_description": "上 model_003 峰谷比约 18:1；下 model_008 约 47:1，低位尖峰更显著。",
       "key_numbers": {
         "model_003_peak_valley_ratio": 18.2,
         "model_008_peak_valley_ratio": 47.2
@@ -164,30 +138,23 @@
       "source": "research/demand_inference/outputs/qpm/newdata_anonymized_qps.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
       "topic": "optimization_demand_input",
-      "purpose": "展示进入第三章 MILP 的匿名化需求时序（QPM/QPS），衔接第二章生产流量与优化输入 q[t,m]；说明需求侧数据口径，不是调度可行解。",
-      "summary": "匿名化模型需求时序，供 MILP 输入对照。",
+      "purpose": "展示脱敏后进入 MILP 的需求序列形态，衔接第二章现象与第三章 q[t,m]。",
+      "argument": "优化模型的需求输入来自真实生产统计的聚合，而非均匀流量假设；读者应确认「优化章使用的需求曲线」与「第二章描述的波动」同一数据体系。",
+      "content_detail": "【画面构成】多模型 QPM（或 QPS）随时间的折线/序列，匿名 model 编号。\n【应看到的规律】仍呈多模型、非平稳、日内起伏；粒度可能为分钟或 30min 槽聚合。\n【论文衔接】§3.2 需求矩阵来源；与 ch2_multi_qps 对照阅读。",
+      "summary": "优化模型的需求输入来自真实生产统计的聚合，而非均匀流量假设；读者应确认「优化章使用的需求曲线」与「第二章描述的波动」同一数据体系。",
       "illustrates": [
-        "优化模型需求输入",
-        "多模型时序需求"
+        "MILP 需求输入",
+        "脱敏时序"
       ],
       "not_about": [
-        "到达分布 PMF",
-        "节点租约时间线"
+        "调度可行解 u",
+        "分布 PMF 拟合"
       ],
       "figure_label": "（第三章总览）",
       "chapter": 3,
       "section": "§3.2 需求输入",
       "plot_type": "multi_series_time_series",
-      "axes": {
-        "x": "时间",
-        "y": "QPM（或 QPS，视导出列）"
-      },
-      "data_source": "data/raw/newdata_anonymized 聚合为 QPM",
-      "provenance": "research/demand_inference/outputs/qpm/",
-      "visual_description": "七模型（或九模型子集）匿名化后的分钟/槽级流量时序，供第三章优化输入口径对照。",
-      "key_findings": [
-        "与第二章 newdata 匿名集一致，作为 MILP 需求矩阵 q[t,m] 的可视化来源"
-      ],
+      "visual_description": "脱敏模型 QPM/QPS 时序，形态与第二章一致，作 MILP 输入示意。",
       "related_figures": [
         "ch2_multi_qps"
       ],
@@ -201,40 +168,26 @@
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_best_dist_summary.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
       "topic": "arrival_distribution_by_slot",
-      "purpose": "说明各 30min 时段应用 Poisson 还是负二项（NB）拟合到达过程；支撑「不宜全局 Poisson、需分 slot 随机到达」的方法选择，不是请求 QPS 折线图。",
-      "summary": "48 slot 中最优分布类型汇总，NB 占绝大多数。",
+      "purpose": "汇总 48 个 30min 时段各自的最优到达分布族（Poisson / NB）。",
+      "argument": "到达过程应建模为「分时段、可过离散的计数过程」，不能全局 Poisson：绝大多数时段选 NB，仅少数低谷时段 Poisson 即可；ZIP 无必要。",
+      "content_detail": "【画面构成】横轴 00:00–23:30 共 48 slot，每格标注 AIC 最优类型（色块/条带）。白天与高峰多为 NB，深夜部分 slot 过离散极强。\n【应看到的规律】NB 约 44/48（91.7%）；Poisson 约 4/48（如 05:30、07:00 等低谷）。\n【论文衔接】§3.3.2 压测到达生成；为 workload 构造提供分布族选择表。",
+      "summary": "到达过程应建模为「分时段、可过离散的计数过程」，不能全局 Poisson：绝大多数时段选 NB，仅少数低谷时段 Poisson 即可；ZIP 无必要。",
       "illustrates": [
-        "分 slot 到达分布选型",
-        "AIC 最优分布",
-        "深夜 vs 白天异质性"
+        "分 slot 分布选型",
+        "NB 主导",
+        "AIC"
       ],
       "not_about": [
-        "生产九模型 QPS 对比",
-        "求解器成本"
+        "九模型 QPS 折线",
+        "CP-SAT 成本"
       ],
       "figure_label": "图3-2a",
       "chapter": 3,
-      "section": "§3.3.2 到达分布拟合",
+      "section": "§3.3.2",
       "plot_type": "categorical_timeline_heatmap",
-      "axes": {
-        "x": "30min slot（00:00–23:30）",
-        "y": "最优分布类型"
-      },
-      "data_source": "data/raw/dice.csv 请求时间戳",
-      "provenance": "research/demand_inference/scripts/fit_dice_slot_distributions.py",
-      "sample_window": "约 8 日，每 slot 240 个 1min 子窗口计数",
-      "visual_description": "48 个时段各自标注 AIC 最优分布：绝大多数格为负二项 NB（约 44/48），少数低谷 slot 为 Poisson。色块或条带一眼可见「深夜过离散更强」。",
-      "key_findings": [
-        "不宜全局假设 Poisson；NB 占 91.7%",
-        "ZIP 未入选，零膨胀不显著"
-      ],
+      "visual_description": "48 slot 标注：NB 约 44/48，Poisson 约 4/48。",
       "related_data": [
         "research/demand_inference/scripts/outputs/dice_poisson/dice_best_distribution.csv"
-      ],
-      "related_figures": [
-        "ch3_dice_pmf_14_16",
-        "ch3_dice_best_dist_all_slots",
-        "ch3_dice_dispersion_summary"
       ],
       "description_id": "ch3_dice_best_dist_summary"
     },
@@ -246,34 +199,24 @@
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_poisson_pmf_14_16.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
       "topic": "arrival_distribution_fit_example",
-      "purpose": "以典型高峰 slot（14:00）为例，展示 1min 到达计数经验分布与 NB 拟合曲线吻合；用于压测/仿真到达生成可信度，不是优化调度时间线。",
-      "summary": "14:00 经验 PMF + NB 曲线（高峰 slot 范例）。",
+      "purpose": "用高峰 slot 14:00 展示「经验计数 + 理论 NB」拟合效果。",
+      "argument": "在典型高峰时段，1 分钟到达计数右偏且方差大于均值，NB 曲线可贴合经验直方图尾部；这是将统计结论落到「可采样压测」的关键证据。",
+      "content_detail": "【画面构成】柱状为 14:00 slot 内 8 日×30 个 1min 子窗口的经验 PMF；叠加 NB 理论曲线（μ≈54/min 量级）。\n【应看到的规律】直方图右尾长于 Poisson 预测；NB 曲线覆盖主峰与尾部。\n【论文衔接】图3-2 范例；与 dice_best_distribution.csv 第 14:00 行一致。",
+      "summary": "在典型高峰时段，1 分钟到达计数右偏且方差大于均值，NB 曲线可贴合经验直方图尾部；这是将统计结论落到「可采样压测」的关键证据。",
       "illustrates": [
-        "单 slot PMF 拟合",
-        "NB vs 经验直方图",
-        "高峰到达强度"
+        "PMF 拟合",
+        "高峰 slot",
+        "NB 优于 Poisson"
       ],
       "not_about": [
-        "全 48 slot 汇总",
-        "QPS 时序"
+        "48 slot 汇总",
+        "租约时序"
       ],
       "figure_label": "图3-2b",
       "chapter": 3,
       "section": "§3.3.2",
       "plot_type": "pmf_bar_with_fitted_curve",
-      "axes": {
-        "x": "1min 到达计数 k",
-        "y": "概率/频数"
-      },
-      "data_source": "dice.csv 14:00 slot 的 1min 计数",
-      "provenance": "analyze_dice_poisson.py",
-      "visual_description": "柱状为经验 PMF，曲线为 NB 拟合；高峰 slot 下拟合曲线贴近直方图尾部，说明用 NB 做压测到达生成合理。",
-      "key_findings": [
-        "14:00 典型高峰：μ≈54/min，NB 优于 Poisson"
-      ],
-      "related_figures": [
-        "ch3_dice_best_dist_summary"
-      ],
+      "visual_description": "14:00 经验柱 + NB 曲线，μ≈54/min 量级。",
       "description_id": "ch3_dice_pmf_14_16"
     },
     {
@@ -284,34 +227,23 @@
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_best_dist_all_slots.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
       "topic": "arrival_distribution_heterogeneity",
-      "purpose": "展示 48 个 slot 经验 PMF 与理论 PMF 的逐格差异，论证到达过程随时段变化、需 slot-wise 参数而非单一全局分布。",
-      "summary": "48 宫格 PMF：每 slot 经验 vs Poisson/NB。",
+      "purpose": "48 宫格展示每个 slot 的经验 PMF 与最优理论 PMF 并排。",
+      "argument": "任意两个时段的到达形态都可能不同：深夜更宽、更重尾；白天高峰更集中；压测与优化应用 slot 级参数向量，而非全局 λ。",
+      "content_detail": "【画面构成】6×8 或类似网格，每格：计数 k vs 概率，经验点/柱 + 理论曲线。\n【应看到的规律】视觉上网格间「胖瘦」差异明显；与图3-2a 的颜色/标注一致。\n【论文衔接】支撑「|T|=48 与到达过程一一对应」的建模选择。",
+      "summary": "任意两个时段的到达形态都可能不同：深夜更宽、更重尾；白天高峰更集中；压测与优化应用 slot 级参数向量，而非全局 λ。",
       "illustrates": [
-        "48 slot 分布异质性",
-        "经验 vs 理论 PMF",
-        "深夜重尾"
+        "slot 异质性",
+        "经验 vs 理论 PMF"
       ],
       "not_about": [
-        "模型间 QPS 相关",
-        "租约成本对比"
+        "QPS 时序",
+        "求解对比"
       ],
       "figure_label": "图3-3",
       "chapter": 3,
       "section": "§3.3.2",
       "plot_type": "small_multiples_pmf",
-      "axes": {
-        "x": "计数 k",
-        "y": "概率（48 子图）"
-      },
-      "data_source": "dice.csv 全 slot",
-      "provenance": "fit_dice_slot_distributions.py / analyze_dice_poisson.py",
-      "visual_description": "48 格小图：每格经验 PMF 点/柱 + 理论 PMF（Poisson 或 NB）。深夜格子的分布更宽、右尾更重；白天高峰更集中。",
-      "key_findings": [
-        "逐 slot 异质性大，需 slot-wise 分布而非全局单一分布"
-      ],
-      "related_figures": [
-        "ch3_dice_dispersion_summary"
-      ],
+      "visual_description": "48 格 PMF：深夜宽尾、白天高峰更集中。",
       "description_id": "ch3_dice_best_dist_all_slots"
     },
     {
@@ -322,35 +254,24 @@
       "source": "research/demand_inference/scripts/outputs/dice_poisson/dice_poisson_dispersion_summary.png",
       "notion_page": "https://www.notion.so/35a9804e900080259b01f19230035f07",
       "topic": "arrival_overdispersion",
-      "purpose": "用离散指数 D_t=Var/E 说明各 slot 相对 Poisson 的过离散程度；解释为何深夜 burst 强、Poisson 假设不成立，与分布选型图呼应。",
-      "summary": "48 slot 的 D_t 与 Poisson 拟合优度对照。",
+      "purpose": "用 D_t=Var/E 量化相对 Poisson 的偏离，解释为何 NB 占主导。",
+      "argument": "Poisson 假设等价于 D_t≈1；生产数据多数 slot 的 D_t 在 1.2–2.3，深夜可达 10+，说明 burst 与静默并存，必须用可过离散的分布族。",
+      "content_detail": "【画面构成】横轴 48 slot；左轴 D_t 折线/柱；右轴可为 Poisson 拟合 p 值或 AIC 差。\n【应看到的规律】深夜段 D_t 尖峰；与图3-2a 中 NB 占主导的 slot 对应。\n【论文衔接】为「不宜全局 Poisson」提供二阶统计证据。",
+      "summary": "Poisson 假设等价于 D_t≈1；生产数据多数 slot 的 D_t 在 1.2–2.3，深夜可达 10+，说明 burst 与静默并存，必须用可过离散的分布族。",
       "illustrates": [
-        "过离散指数 D_t",
-        "Poisson 假设检验",
-        "深夜 burst"
+        "过离散",
+        "D_t",
+        "Poisson 检验"
       ],
       "not_about": [
-        "请求 QPS 折线",
-        "求解切换次数"
+        "模型切换",
+        "流量占比"
       ],
       "figure_label": "图3-4",
       "chapter": 3,
       "section": "§3.3.2",
       "plot_type": "dual_metric_by_slot",
-      "axes": {
-        "x": "slot",
-        "y_left": "离散指数 D_t=Var/E",
-        "y_right": "Poisson 拟合优度（如 χ² p 值或 AIC 差）"
-      },
-      "data_source": "dice.csv 1min 计数",
-      "provenance": "analyze_dice_poisson.py",
-      "visual_description": "沿 48 slot 展示 D_t：多数在 1.2–2.3（轻度过离散），深夜可达 >10。与 Poisson 基准对比显示深夜 slot 最不适合 Poisson。",
-      "key_findings": [
-        "D_t≈1 仅为 Poisson 特例；优化/压测应用 NB 或 slot 混合"
-      ],
-      "related_figures": [
-        "ch3_dice_best_dist_summary"
-      ],
+      "visual_description": "D_t 多数 1.2–2.3，深夜可达 10+。",
       "description_id": "ch3_dice_dispersion_summary"
     },
     {
@@ -362,25 +283,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT 与 SA 方案指标对比",
-      "topic": "solver_plan_comparison_summary",
-      "purpose": "对比两种求解方案（如 CP-SAT vs SA）的资源形态摘要：长租节点数 Σs、短租活跃 Σz 等；说明「哪类方案更省节点/更活跃」，不是生产流量波动图。",
-      "summary": "对比两种求解方案（如 CP-SAT vs SA）的资源形态摘要：长租节点数 Σs、短租活跃 Σz 等；说明「哪类方案更省节点/更活跃」，不是生产流量波动图。",
-      "illustrates": [
-        "方案指标对比",
-        "长租/短租规模",
-        "求解实验摘要"
-      ],
-      "not_about": [
-        "分钟 QPS",
-        "到达 PMF"
-      ],
       "figure_label": "对比-指标",
       "plot_type": "grouped_bar",
-      "visual_description": "并列柱：CP-SAT vs SA（或两方案标签）的 Σs（长租节点数）、Σz（短租活跃计数）、长租活跃槽等摘要指标。",
+      "topic": "solver_plan_comparison_summary",
+      "purpose": "主实验：CP-SAT（α=1、s 有序、600s）与 SA 同口径下的资源规模摘要。",
+      "argument": "在相同墙钟与算例下，CP-SAT 倾向用更少短租活跃（Σz 160 vs 213）、相当长租数（15 vs 16），且长租活跃槽略低——精确求解在「节点动用强度」上更克制，为后文更低 cost_base 铺垫。",
+      "content_detail": "【画面构成】分组柱状图：每组两柱（CP-SAT / SA），指标如 Σs、Σz、长租活跃槽等。\n【典型读数】CP-SAT：短租节点 17、长租 15、Σz=160、长租活跃槽 699；SA：短租 16、长租 16、Σz=213、长租活跃槽 720（以 REPORT.md 为准）。\n【论文衔接】§4 主对比第一张图；须与 cost、switch、lease 联读。",
+      "summary": "在相同墙钟与算例下，CP-SAT 倾向用更少短租活跃（Σz 160 vs 213）、相当长租数（15 vs 16），且长租活跃槽略低——精确求解在「节点动用强度」上更克制，为后文更低 cost_base 铺垫。",
+      "illustrates": [
+        "Σs",
+        "Σz",
+        "方案摘要"
+      ],
+      "not_about": [
+        "QPS",
+        "PMF"
+      ],
       "key_findings": [
-        "用于快速比较两方案资源形态，需结合同目录 REPORT.md 数值"
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
       ],
       "description_id": "ch4_compare_metrics"
     },
@@ -393,25 +314,24 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "成本分解对比",
-      "topic": "solver_cost_decomposition",
-      "purpose": "分解总成本为长租项、短租项与惩罚项，说明成本驱动因素；不是请求波动。",
-      "summary": "分解总成本为长租项、短租项与惩罚项，说明成本驱动因素；不是请求波动。",
-      "illustrates": [
-        "成本结构",
-        "cost_base 组成",
-        "长租 vs 短租费用"
-      ],
-      "not_about": [
-        "QPS 时序",
-        "模型切换时间线"
-      ],
       "figure_label": "对比-成本",
       "plot_type": "stacked_or_grouped_bar",
-      "visual_description": "成本分解：长租项、短租项、惩罚项（若有）；对照 cost_base 与 objective。",
+      "topic": "solver_cost_decomposition",
+      "purpose": "展示两方案 cost_base 及长租/短租/惩罚分项。",
+      "argument": "成本优势主要来自 cost_base（CP-SAT 42038.8 vs SA 47503.1，差约 5464）；读者应看到「精确求解省在节点租用结构」，而非单一 objective 数字。",
+      "content_detail": "【画面构成】堆叠或分组柱：长租项 p_long·T·(N−Σs)、短租项 p_short·Σz、以及 objective 相对 cost_base 的附加（CP-SAT 约 +699 对应 α·长租活跃）。\n【论文衔接】解释经济性结论；公式与 cpsat/solve.py 一致。",
+      "summary": "成本优势主要来自 cost_base（CP-SAT 42038.8 vs SA 47503.1，差约 5464）；读者应看到「精确求解省在节点租用结构」，而非单一 objective 数字。",
+      "illustrates": [
+        "cost_base",
+        "长租/短租费用",
+        "惩罚项"
+      ],
+      "not_about": [
+        "流量波动"
+      ],
       "key_findings": [
-        "cost_base = p_long·T·(N−Σs) + p_short·Σz"
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
       ],
       "description_id": "ch4_compare_cost"
     },
@@ -424,23 +344,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "相对基线目标值对比",
-      "topic": "solver_objective_vs_baseline",
-      "purpose": "对照各方案 cost_base 与求解器 objective，显示惩罚/附加项带来的差额。",
-      "summary": "对照各方案 cost_base 与求解器 objective，显示惩罚/附加项带来的差额。",
-      "illustrates": [
-        "目标值",
-        "objective−base",
-        "α 相关附加成本"
-      ],
-      "not_about": [
-        "到达分布",
-        "流量占比"
-      ],
       "figure_label": "对比-目标",
       "plot_type": "bar",
-      "visual_description": "各方案 cost_base 与求解器 objective 并排；objective−base 反映 α·长租活跃等附加项。",
+      "topic": "solver_objective_vs_baseline",
+      "purpose": "并列展示 cost_base 与求解器 reported objective。",
+      "argument": "CP-SAT 的 objective 高于 cost_base（约 +699），对应 α=1 时长租活跃惩罚；SA 无该附加项时 objective≈cost_base。读者应区分「租用成本」与「运营惩罚」。",
+      "content_detail": "【画面构成】每方案两根柱：cost_base、objective；或 objective−base 差额标注。\n【论文衔接】解释表 4-x 中 objective 列，避免与 cost_base 混谈。",
+      "summary": "CP-SAT 的 objective 高于 cost_base（约 +699），对应 α=1 时长租活跃惩罚；SA 无该附加项时 objective≈cost_base。读者应区分「租用成本」与「运营惩罚」。",
+      "illustrates": [
+        "objective",
+        "cost_base",
+        "α 惩罚"
+      ],
+      "not_about": [
+        "QPS"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_compare_objective"
     },
     {
@@ -452,29 +374,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "长租/短租节点时间线对比",
+      "figure_label": "对比-租约",
+      "plot_type": "stacked_area_or_step",
       "topic": "solver_lease_dynamics_comparison",
-      "purpose": "对比两方案在 48 个时间槽上长租/短租活跃节点数如何随负载变化；说明租约策略差异，不是 QPS 曲线。",
-      "summary": "对比两方案在 48 个时间槽上长租/短租活跃节点数如何随负载变化；说明租约策略差异，不是 QPS 曲线。",
+      "purpose": "对比两方案在 48 槽内长租/短租「活跃节点数」随时段变化。",
+      "argument": "应观察高峰槽是否更多启用短租、低谷是否收缩；CP-SAT 与 SA 的峰谷对齐策略差异体现在曲线包络与相位上，而非静态节点总数 alone。",
+      "content_detail": "【画面构成】时间槽 t 为横轴；两条（或四条）阶梯/面积线表示长租活跃、短租活跃节点数；两方案上下对比或叠色。\n【论文衔接】把抽象 Σz 翻译成「何时加机」的可视故事。",
+      "summary": "应观察高峰槽是否更多启用短租、低谷是否收缩；CP-SAT 与 SA 的峰谷对齐策略差异体现在曲线包络与相位上，而非静态节点总数 alone。",
       "illustrates": [
         "租约时序",
-        "高峰短租启用",
+        "高峰加机",
         "长租覆盖"
       ],
       "not_about": [
-        "请求 PMF",
-        "部署副本表"
+        "PMF",
+        "部署表"
       ],
-      "figure_label": "对比-租约",
-      "plot_type": "stacked_area_or_step",
-      "axes": {
-        "x": "时间槽 t（30min）",
-        "y": "活跃节点数"
-      },
-      "visual_description": "两方案的长租/短租活跃节点数随时间变化；深色/暖色区分长租与按需。",
       "key_findings": [
-        "观察高峰槽是否集中启用短租、长租是否覆盖稳定负载"
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
       ],
       "description_id": "ch4_compare_lease"
     },
@@ -487,25 +405,24 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "模型切换指标对比",
-      "topic": "solver_migration_stability",
-      "purpose": "对比 Σ(u−c) 与模型切换次数，说明方案在共置/迁移上的稳定性；不是流量波动。",
-      "summary": "对比 Σ(u−c) 与模型切换次数，说明方案在共置/迁移上的稳定性；不是流量波动。",
-      "illustrates": [
-        "模型切换",
-        "冷启动抬升 Σ(u−c)",
-        "短租/长租侧切换"
-      ],
-      "not_about": [
-        "QPS 尖峰",
-        "分布拟合 AIC"
-      ],
       "figure_label": "对比-切换",
       "plot_type": "grouped_bar",
-      "visual_description": "Σ(u−c) 与模型切换次数（可拆短租/长租侧）；切换定义见 compare REPORT。",
+      "topic": "solver_migration_stability",
+      "purpose": "对比迁移稳定性：Σ(u−c) 与主导模型切换次数。",
+      "argument": "CP-SAT 的 Σ(u−c)=63、切换 24 次；SA 为 148 与 52 次——启发式方案更频繁改配、实例相对滑动底抬升更多，运营上对应更多冷启动与抖动风险。",
+      "content_detail": "【画面构成】并列柱：Σ(u−c) 总量；切换次数（可拆短租/长租侧，SA 长租侧切换占比高）。\n【定义提醒】切换仅在相邻两槽均有实例且 argmax_m u 变化时计数。\n【论文衔接】支撑「CP-SAT 解更稳」的运营叙事。",
+      "summary": "CP-SAT 的 Σ(u−c)=63、切换 24 次；SA 为 148 与 52 次——启发式方案更频繁改配、实例相对滑动底抬升更多，运营上对应更多冷启动与抖动风险。",
+      "illustrates": [
+        "模型切换",
+        "Σ(u−c)",
+        "冷启动代理"
+      ],
+      "not_about": [
+        "QPS 尖峰"
+      ],
       "key_findings": [
-        "CP-SAT 典型切换少于 SA；Σ(u−c) 衡量相对滑动窗口底的抬升"
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
       ],
       "description_id": "ch4_compare_switch"
     },
@@ -518,22 +435,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT 租约使用时间线（脱敏 9 模型，600s）",
-      "topic": "solver_single_plan_lease",
-      "purpose": "单方案（CP-SAT）下各节点长租/短租属性随时间槽的分布；审计租约决策。",
-      "summary": "单方案（CP-SAT）下各节点长租/短租属性随时间槽的分布；审计租约决策。",
-      "illustrates": [
-        "单方案租约时间线",
-        "Σs 与 z 分布"
-      ],
-      "not_about": [
-        "两方案对比柱图",
-        "生产流量"
-      ],
       "figure_label": "CP-SAT-租约",
       "plot_type": "node_timeline_lease_stripe",
-      "visual_description": "每行一节点，横轴时间槽；条带颜色区分长租/短租；展示 Σs 与 z 的时间分布。",
+      "topic": "solver_single_plan_lease",
+      "purpose": "单方案各节点的长租/短租属性沿时间槽分布。",
+      "argument": "长租节点应在全周期保持「底色」稳定；短租节点在负载槽激活、低谷收回；用于审计 Σs 与 z 是否集中在预期时段。",
+      "content_detail": "【画面构成】行=节点，列=槽；左缘色条：深=长租、暖=短租。\n【论文衔接】单方案细节，补充对比图中的 SA/CP 差异。",
+      "summary": "长租节点应在全周期保持「底色」稳定；短租节点在负载槽激活、低谷收回；用于审计 Σs 与 z 是否集中在预期时段。",
+      "illustrates": [
+        "租约条纹",
+        "Σs",
+        "z 分布"
+      ],
+      "not_about": [
+        "两方案对比"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_cpsat_lease"
     },
     {
@@ -545,23 +465,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT 节点—模型调度时间线（主导模型/长租短租）",
-      "topic": "solver_single_plan_scheduling",
-      "purpose": "单方案节点—主导模型随时间变化，展示调度轨迹与切换；不是请求 QPS。",
-      "summary": "单方案节点—主导模型随时间变化，展示调度轨迹与切换；不是请求 QPS。",
-      "illustrates": [
-        "节点调度时间线",
-        "主导模型",
-        "模型切换轨迹"
-      ],
-      "not_about": [
-        "到达计数 PMF",
-        "流量占比条形图"
-      ],
       "figure_label": "CP-SAT-调度",
       "plot_type": "node_model_timeline",
-      "visual_description": "节点×时间热力/色块：每格 dominant model（argmax_m u）；可见共置与切换轨迹。",
+      "topic": "solver_single_plan_scheduling",
+      "purpose": "单方案：每节点每槽的 dominant model（调度轨迹）。",
+      "argument": "可见模型在节点间的迁移、头部模型占据多条长线、以及低谷时空闲；是「解长什么样」的最直观图。",
+      "content_detail": "【画面构成】热力/色块：行节点、列槽、颜色=model。\n【论文衔接】与 u heatmap、共置图三角验证。",
+      "summary": "可见模型在节点间的迁移、头部模型占据多条长线、以及低谷时空闲；是「解长什么样」的最直观图。",
+      "illustrates": [
+        "dominant model",
+        "迁移轨迹",
+        "空闲槽"
+      ],
+      "not_about": [
+        "QPS"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_cpsat_node_timeline"
     },
     {
@@ -573,23 +495,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT 节点共置时间线（按 device_num 分条，脱敏 9 模型，600s）",
+      "figure_label": "CP-SAT-共置",
+      "plot_type": "node_coplacement_timeline",
       "topic": "solver_coplacement_and_coldstart",
-      "purpose": "展示同节点多模型共置与冷启动（c<u 斜线）时段；说明容量与迁移代价结构。",
-      "summary": "展示同节点多模型共置与冷启动（c<u 斜线）时段；说明容量与迁移代价结构。",
+      "purpose": "CP-SAT 方案：节点内多模型共置与冷启动。",
+      "argument": "同色多段表示同槽多模型并存；斜线 hatch 表示 c<u（有效能力未达 u），说明省节点方案在启动期存在产能损失窗口。",
+      "content_detail": "【画面构成】device 分条；多色块=共置；斜线=冷启动。\n【论文衔接】运营风险与 Σ(u−c) 的可视化依据。",
+      "summary": "同色多段表示同槽多模型并存；斜线 hatch 表示 c<u（有效能力未达 u），说明省节点方案在启动期存在产能损失窗口。",
       "illustrates": [
         "共置",
         "冷启动",
-        "device 分条"
+        "device_num"
       ],
       "not_about": [
-        "请求波动",
-        "成本分解"
+        "流量折线"
       ],
-      "figure_label": "CP-SAT-共置",
-      "plot_type": "node_coplacement_timeline",
-      "visual_description": "按 device_num 分条；一格多色表示同节点多模型实例 u>0；斜线区表示冷启动 c<u。",
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_cpsat_coplacement_timeline"
     },
     {
@@ -601,23 +525,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT 各时间片模型×节点部署热力图",
-      "topic": "solver_deployment_matrix_audit",
-      "purpose": "逐时间片 M×N 部署矩阵 u[t,m,n] 热力图，用于检查可行性与覆盖空洞。",
-      "summary": "逐时间片 M×N 部署矩阵 u[t,m,n] 热力图，用于检查可行性与覆盖空洞。",
-      "illustrates": [
-        "部署矩阵",
-        "时段覆盖",
-        "可行性审计"
-      ],
-      "not_about": [
-        "QPS 折线",
-        "SA 搜索轨迹"
-      ],
       "figure_label": "CP-SAT-u矩阵",
       "plot_type": "heatmap_small_multiples",
-      "visual_description": "每个时间片一张 M×N 热力图，颜色深度为 u[t,m,n]；用于审计可行性覆盖与空洞。",
+      "topic": "solver_deployment_matrix_audit",
+      "purpose": "逐槽 M×N 的 u[t,m,n] 热力图（小 multiples）。",
+      "argument": "用于检查每个时段是否所有模型都有足够实例、是否存在空洞节点；是可行性调试与论文附录级「解的结构」证据。",
+      "content_detail": "【画面构成】48 张或抽样热力图；轴=model×node；色深=u。\n【论文衔接】约束满足性的空间展示。",
+      "summary": "用于检查每个时段是否所有模型都有足够实例、是否存在空洞节点；是可行性调试与论文附录级「解的结构」证据。",
+      "illustrates": [
+        "u 矩阵",
+        "覆盖",
+        "可行性"
+      ],
+      "not_about": [
+        "QPS"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_cpsat_u_heatmap"
     },
     {
@@ -629,23 +555,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT 分模型有效产能与 SLA 需求下界（α=1，s有序）",
-      "topic": "solver_sla_capacity_check",
-      "purpose": "分模型对比有效供给与 SLA 需求下界 q_demand，验证是否满足容量约束；不是流量波动图。",
-      "summary": "分模型对比有效供给与 SLA 需求下界 q_demand，验证是否满足容量约束；不是流量波动图。",
-      "illustrates": [
-        "SLA 需求下界",
-        "有效 QPM",
-        "分模型可行性"
-      ],
-      "not_about": [
-        "到达分布",
-        "租约对比"
-      ],
       "figure_label": "CP-SAT-分模型产能",
       "plot_type": "line_or_bar_per_model",
-      "visual_description": "各模型有效供给（QPM）与 SLA 需求下界 q_demand 对比；检验 α=1 下是否逐模型满足。",
+      "topic": "solver_sla_capacity_check",
+      "purpose": "分模型：有效供给（QPM）vs SLA 需求下界 q_demand。",
+      "argument": "每个 model 一条或一组柱/线：若供给低于下界则该模型在部分槽违约；α=1 主结果应大体满足或贴近下界。",
+      "content_detail": "【画面构成】x=model，y=QPM；两组柱（供给/需求）或折线对比。\n【论文衔接】把 SLA 约束从公式落到逐模型图。",
+      "summary": "每个 model 一条或一组柱/线：若供给低于下界则该模型在部分槽违约；α=1 主结果应大体满足或贴近下界。",
+      "illustrates": [
+        "SLA 下界",
+        "有效产能",
+        "分模型"
+      ],
+      "not_about": [
+        "到达 PMF"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_cpsat_per_model_qpm"
     },
     {
@@ -657,23 +585,25 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "SA 阶梯法长租数 K 扫描",
-      "topic": "solver_sensitivity_lease_count",
-      "purpose": "SA 阶梯法扫描长租节点数 K 对 cost/可行性的敏感性；方法调参，不是生产流量。",
-      "summary": "SA 阶梯法扫描长租节点数 K 对 cost/可行性的敏感性；方法调参，不是生产流量。",
-      "illustrates": [
-        "长租数 K 扫描",
-        "敏感性分析",
-        "SA 调参"
-      ],
-      "not_about": [
-        "CP-SAT vs SA 柱图",
-        "QPS 时序"
-      ],
       "figure_label": "SA-K扫描",
       "plot_type": "line_sweep",
-      "visual_description": "横轴长租数 K，纵轴 cost 或可行率；SA 阶梯法选 K 的敏感性。",
+      "topic": "solver_sensitivity_lease_count",
+      "purpose": "SA 阶梯法：扫描长租节点数 K。",
+      "argument": "展示 K 增大时 cost 下降与可行率变化，用于说明 SA 需预调 K、而 CP-SAT 在同一 MILP 内同时选 s。",
+      "content_detail": "【画面构成】折线：横轴 K，纵轴 cost 或 status。\n【论文衔接】启发式方法调参负担。",
+      "summary": "展示 K 增大时 cost 下降与可行率变化，用于说明 SA 需预调 K、而 CP-SAT 在同一 MILP 内同时选 s。",
+      "illustrates": [
+        "K 扫描",
+        "敏感性",
+        "SA"
+      ],
+      "not_about": [
+        "CP-SAT 柱图"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_sa_lease_sweep"
     },
     {
@@ -685,23 +615,24 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "节点池规模 N 可行性扫描",
-      "topic": "solver_feasibility_node_pool",
-      "purpose": "扫描节点池规模 N 对求解可行性与目标的影响，标定最小可行 N。",
-      "summary": "扫描节点池规模 N 对求解可行性与目标的影响，标定最小可行 N。",
-      "illustrates": [
-        "节点池规模 N",
-        "可行性边界",
-        "算例标定"
-      ],
-      "not_about": [
-        "请求波动",
-        "分布 PMF"
-      ],
       "figure_label": "N-可行性",
       "plot_type": "line_or_scatter",
-      "visual_description": "节点池规模 N 与求解状态/目标；标出最小可行 N 邻域。",
+      "topic": "solver_feasibility_node_pool",
+      "purpose": "节点池规模 N 的可行性扫描。",
+      "argument": "标出使 MILP/启发式刚可行的最小 N 邻域，为「需要多少物理机」提供边界。",
+      "content_detail": "【画面构成】横轴 N，纵轴 objective 或 feasible/infeasible 标记。\n【论文衔接】算例标定与资源规划下限。",
+      "summary": "标出使 MILP/启发式刚可行的最小 N 邻域，为「需要多少物理机」提供边界。",
+      "illustrates": [
+        "N 扫描",
+        "可行性边界"
+      ],
+      "not_about": [
+        "QPS"
+      ],
+      "key_findings": [
+        "数值以 compare_standard_600s 或对应 outputs/REPORT.md 为准"
+      ],
       "description_id": "ch4_n_feasibility"
     },
     {
@@ -713,23 +644,23 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT α=1+s有序：节点—模型调度时间线（15 长租 + 17 按需）",
       "topic": "solver_single_plan_scheduling",
-      "purpose": "论文主结果的节点—模型调度时间线，展示推荐 CP-SAT 解的时序结构。",
-      "summary": "论文主结果的节点—模型调度时间线，展示推荐 CP-SAT 解的时序结构。",
+      "purpose": "论文推荐解：CP-SAT α=1 + 迁移有序 的节点—模型时间线。",
+      "argument": "在 600s 内得到可行解后，应看到长租节点（约 15）在时间上持续承载主导模型，短租节点（约 17）在高峰槽抬升；切换条带较 SA 方案更稀疏。",
+      "content_detail": "【画面构成】每行节点 n，每列 30min 槽；格内颜色=主导 model（argmax u）。左侧或边缘色条区分长租/短租节点。\n【典型结构】model_003 等头部在多个节点重复出现；低谷槽出现空格（无实例）。\n【论文衔接】§4 主结果可视化；与 compare_standard 指标一致。",
+      "summary": "在 600s 内得到可行解后，应看到长租节点（约 15）在时间上持续承载主导模型，短租节点（约 17）在高峰槽抬升；切换条带较 SA 方案更稀疏。",
       "illustrates": [
-        "主结果 CP-SAT α=1+s 有序",
-        "600s 墙钟可行解"
+        "主结果调度",
+        "dominant model",
+        "长租/短租行"
       ],
       "not_about": [
-        "生产九模型 QPS",
-        "dice 到达 PMF"
+        "QPS",
+        "成本柱图"
       ],
-      "plot_type": "timeline",
-      "visual_description": "推荐论文主结果：α=1、迁移有序、600s 墙钟；15 长租 + 17 短租典型。",
       "key_findings": [
-        "与 compare_standard_600s REPORT 对齐"
+        "15 长租 + 17 短租；切换 24；见 run_cpsat_la1_s_ordered/result.json"
       ],
       "description_id": "ch4_la1_s_ordered_node_timeline"
     },
@@ -742,23 +673,22 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "CP-SAT α=1+s有序：节点共置（斜线=冷启动 c<u）",
       "topic": "solver_coplacement_and_coldstart",
-      "purpose": "论文主结果（α=1+s 有序）的共置与冷启动时间线，展示推荐方案的实例布局。",
-      "summary": "论文主结果（α=1+s 有序）的共置与冷启动时间线，展示推荐方案的实例布局。",
+      "purpose": "主结果共置：同节点多模型实例与冷启动（斜线 hatch）时段。",
+      "argument": "共置降低节点数但带来 c<u 的冷启动窗口；斜线区域表示有效能力尚未爬满，论文借此讨论「省节点 vs 启动损失」权衡。",
+      "content_detail": "【画面构成】按 device_num 分条；每格可多色（多模型 u>0）；斜线=冷启动。\n【论文衔接】与 node_timeline 对照；解释 Σ(u−c) 来源。",
+      "summary": "共置降低节点数但带来 c<u 的冷启动窗口；斜线区域表示有效能力尚未爬满，论文借此讨论「省节点 vs 启动损失」权衡。",
       "illustrates": [
-        "主结果 CP-SAT α=1+s 有序",
-        "600s 墙钟可行解"
+        "共置",
+        "冷启动 c<u",
+        "device 分条"
       ],
       "not_about": [
-        "生产九模型 QPS",
-        "dice 到达 PMF"
+        "流量折线"
       ],
-      "plot_type": "timeline",
-      "visual_description": "推荐论文主结果：α=1、迁移有序、600s 墙钟；15 长租 + 17 短租典型。",
       "key_findings": [
-        "与 compare_standard_600s REPORT 对齐"
+        "见同目录 REPORT.md / result.json"
       ],
       "description_id": "ch4_la1_s_ordered_coplacement"
     },
@@ -771,23 +701,22 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "CP-SAT α=1+s有序：租约使用时间线",
       "topic": "solver_single_plan_lease",
-      "purpose": "论文主结果的租约使用时间线（15 长租 + 17 短租典型），非流量波动。",
-      "summary": "论文主结果的租约使用时间线（15 长租 + 17 短租典型），非流量波动。",
+      "purpose": "单方案各节点的长租/短租属性沿时间槽分布。",
+      "argument": "主结果租约结构：约 15 长租节点贯穿周期、17 短租在负载槽脉冲式激活；说明精确求解如何把「 sempre-on 算力」与「弹性算力」分层使用。",
+      "content_detail": "【画面构成】行=节点，列=槽；左缘色条：深=长租、暖=短租。\n【论文衔接】单方案细节，补充对比图中的 SA/CP 差异。",
+      "summary": "长租节点应在全周期保持「底色」稳定；短租节点在负载槽激活、低谷收回；用于审计 Σs 与 z 是否集中在预期时段。",
       "illustrates": [
-        "主结果 CP-SAT α=1+s 有序",
-        "600s 墙钟可行解"
+        "租约条纹",
+        "Σs",
+        "z 分布"
       ],
       "not_about": [
-        "生产九模型 QPS",
-        "dice 到达 PMF"
+        "两方案对比"
       ],
       "plot_type": "timeline",
-      "visual_description": "推荐论文主结果：α=1、迁移有序、600s 墙钟；15 长租 + 17 短租典型。",
       "key_findings": [
-        "与 compare_standard_600s REPORT 对齐"
+        "run_cpsat_la1_s_ordered/result.json"
       ],
       "description_id": "ch4_la1_s_ordered_lease"
     },
@@ -800,24 +729,22 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
       "caption_echo": "α=1 无约束 vs s有序：指标对比",
       "topic": "solver_ablation_s_ordered",
-      "purpose": "对比 α=1 下是否施加迁移有序约束 s 对指标/切换/租约的影响；消融实验。",
-      "summary": "α=1 无 s 序 vs s 有序：指标/切换/租约对比。",
+      "purpose": "消融：α=1 下「无 s 有序」vs「s 有序」的指标柱图。",
+      "argument": "施加 s 有序后，切换与 Σ(u−c) 通常下降，说明约束减少了迁移抖动；cost_base 可能略升，体现「稳」与「省」的折中。",
+      "content_detail": "【画面构成】两组方案并列柱：Σs、Σz、切换等（见 compare_la1_vs_s_ordered/REPORT.md）。\n【论文衔接】论证工程约束 s 有序的必要性。",
+      "summary": "施加 s 有序后，切换与 Σ(u−c) 通常下降，说明约束减少了迁移抖动；cost_base 可能略升，体现「稳」与「省」的折中。",
       "illustrates": [
-        "s 有序约束",
-        "切换与 Σ(u−c)",
-        "α=1 消融"
+        "消融",
+        "s 有序",
+        "切换下降"
       ],
       "not_about": [
-        "生产 QPS",
-        "到达 NB 拟合"
+        "QPS"
       ],
-      "plot_type": "grouped_bar",
-      "visual_description": "α=1 无 s 序约束 vs α=1+s 有序：指标/切换/租约对比。",
       "key_findings": [
-        "s 有序降低切换与 Σ(u−c)，可能略增 cost_base"
+        "见同目录 REPORT.md / result.json"
       ],
       "description_id": "ch4_compare_la1_s_ordered_metrics"
     },
@@ -830,24 +757,22 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "α=1 无约束 vs s有序：切换与 Σ(u−c)",
       "topic": "solver_ablation_s_ordered",
-      "purpose": "对比 α=1 下是否施加迁移有序约束 s 对指标/切换/租约的影响；消融实验。",
-      "summary": "α=1 无 s 序 vs s 有序：指标/切换/租约对比。",
+      "purpose": "消融对比：α=1 无 s 有序 vs α=1+s 有序 — 切换柱图。",
+      "argument": "s 有序显著降切换；用于证明迁移有序约束在工程上必要。",
+      "content_detail": "【画面构成】Σ(u−c) 与切换次数；两方案 CP-SAT 并列。\n【数据】compare_la1_vs_s_ordered/REPORT.md。",
+      "summary": "s 有序显著降切换；用于证明迁移有序约束在工程上必要。",
       "illustrates": [
-        "s 有序约束",
-        "切换与 Σ(u−c)",
-        "α=1 消融"
+        "消融",
+        "s 有序",
+        "switch"
       ],
       "not_about": [
-        "生产 QPS",
-        "到达 NB 拟合"
+        "QPS"
       ],
       "plot_type": "grouped_bar",
-      "visual_description": "α=1 无 s 序约束 vs α=1+s 有序：指标/切换/租约对比。",
       "key_findings": [
-        "s 有序降低切换与 Σ(u−c)，可能略增 cost_base"
+        "compare_la1_vs_s_ordered/REPORT.md"
       ],
       "description_id": "ch4_compare_la1_s_ordered_switch"
     },
@@ -860,24 +785,22 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "α=1 无约束 vs s有序：长租/按需活跃节点时序",
       "topic": "solver_ablation_s_ordered",
-      "purpose": "对比 α=1 下是否施加迁移有序约束 s 对指标/切换/租约的影响；消融实验。",
-      "summary": "α=1 无 s 序 vs s 有序：指标/切换/租约对比。",
+      "purpose": "消融对比：α=1 无 s 有序 vs α=1+s 有序 — 租约时序。",
+      "argument": "s 有序改变高峰加机节奏；用于证明迁移有序约束在工程上必要。",
+      "content_detail": "【画面构成】长租/短租活跃曲线；两方案 CP-SAT 并列。\n【数据】compare_la1_vs_s_ordered/REPORT.md。",
+      "summary": "s 有序改变高峰加机节奏；用于证明迁移有序约束在工程上必要。",
       "illustrates": [
-        "s 有序约束",
-        "切换与 Σ(u−c)",
-        "α=1 消融"
+        "消融",
+        "s 有序",
+        "lease"
       ],
       "not_about": [
-        "生产 QPS",
-        "到达 NB 拟合"
+        "QPS"
       ],
-      "plot_type": "grouped_bar",
-      "visual_description": "α=1 无 s 序约束 vs α=1+s 有序：指标/切换/租约对比。",
+      "plot_type": "stacked_area_or_step",
       "key_findings": [
-        "s 有序降低切换与 Σ(u−c)，可能略增 cost_base"
+        "compare_la1_vs_s_ordered/REPORT.md"
       ],
       "description_id": "ch4_compare_la1_s_ordered_lease"
     },
@@ -890,25 +813,20 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "SA 无惩罚 vs α=1：搜索轨迹（cost 与接受率）",
       "topic": "solver_sa_penalty_ablation",
-      "purpose": "对比 SA 无惩罚 vs SA α=1（或含搜索轨迹），说明惩罚项对解质量与搜索过程的作用。",
-      "summary": "SA 无惩罚 vs α=1：cost/接受率轨迹",
+      "purpose": "SA 无惩罚 vs SA α=1 的搜索过程对比。",
+      "argument": "α=1 引入长租活跃惩罚后，SA 解更接近「少折腾、少短租滥用」；trace 图展示 cost 随迭代下降与接受率，说明搜索是否收敛。",
+      "content_detail": "【画面构成】双轴或双子图：迭代 vs cost/accept rate。\n【论文衔接】与 CP-SAT α=1 公平对比的 SA 基线选择。",
+      "summary": "α=1 引入长租活跃惩罚后，SA 解更接近「少折腾、少短租滥用」；trace 图展示 cost 随迭代下降与接受率，说明搜索是否收敛。",
       "illustrates": [
-        "SA 惩罚项 α",
-        "搜索轨迹",
-        "启发式行为"
+        "SA α=1",
+        "惩罚项",
+        "trace"
       ],
       "not_about": [
-        "请求流量",
-        "分布拟合"
+        "QPS"
       ],
-      "plot_type": "grouped_bar_or_trace",
-      "visual_description": "SA 无惩罚 vs SA α=1 对比；trace 图为 cost/接受率迭代。",
-      "key_findings": [
-        "以 result.json 与 REPORT.md 为准核对数值"
-      ],
+      "plot_type": "line",
       "description_id": "ch4_compare_sa_trace"
     },
     {
@@ -920,25 +838,20 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "SA 无惩罚 vs α=1：指标对比",
       "topic": "solver_sa_penalty_ablation",
-      "purpose": "对比 SA 无惩罚 vs SA α=1（或含搜索轨迹），说明惩罚项对解质量与搜索过程的作用。",
-      "summary": "SA 无惩罚 vs α=1：指标对比",
+      "purpose": "SA 无惩罚 vs SA α=1 的结果指标对比。",
+      "argument": "α=1 引入长租活跃惩罚后，SA 解更接近「少折腾、少短租滥用」；metrics 图展示 Σz、切换、cost 等改善幅度。",
+      "content_detail": "【画面构成】并列柱：两 SA 变体。\n【论文衔接】与 CP-SAT α=1 公平对比的 SA 基线选择。",
+      "summary": "α=1 引入长租活跃惩罚后，SA 解更接近「少折腾、少短租滥用」；metrics 图展示 Σz、切换、cost 等改善幅度。",
       "illustrates": [
-        "SA 惩罚项 α",
-        "指标对比",
-        "启发式行为"
+        "SA α=1",
+        "惩罚项",
+        "指标"
       ],
       "not_about": [
-        "请求流量",
-        "分布拟合"
+        "QPS"
       ],
-      "plot_type": "grouped_bar_or_trace",
-      "visual_description": "SA 无惩罚 vs SA α=1 对比；trace 图为 cost/接受率迭代。",
-      "key_findings": [
-        "以 result.json 与 REPORT.md 为准核对数值"
-      ],
+      "plot_type": "grouped_bar",
       "description_id": "ch4_compare_sa_vs_sa_la1_metrics"
     },
     {
@@ -950,25 +863,20 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "SA 无惩罚 vs α=1：长租/按需活跃节点时序",
       "topic": "solver_sa_penalty_ablation",
-      "purpose": "对比 SA 无惩罚 vs SA α=1（或含搜索轨迹），说明惩罚项对解质量与搜索过程的作用。",
-      "summary": "SA 无惩罚 vs α=1：指标对比",
+      "purpose": "SA 无惩罚 vs SA α=1 的结果指标对比。",
+      "argument": "α=1 引入长租活跃惩罚后，SA 解更接近「少折腾、少短租滥用」；metrics 图展示 Σz、切换、cost 等改善幅度。",
+      "content_detail": "【画面构成】并列柱：两 SA 变体。\n【论文衔接】与 CP-SAT α=1 公平对比的 SA 基线选择。",
+      "summary": "α=1 引入长租活跃惩罚后，SA 解更接近「少折腾、少短租滥用」；metrics 图展示 Σz、切换、cost 等改善幅度。",
       "illustrates": [
-        "SA 惩罚项 α",
-        "指标对比",
-        "启发式行为"
+        "SA α=1",
+        "惩罚项",
+        "指标"
       ],
       "not_about": [
-        "请求流量",
-        "分布拟合"
+        "QPS"
       ],
-      "plot_type": "grouped_bar_or_trace",
-      "visual_description": "SA 无惩罚 vs SA α=1 对比；trace 图为 cost/接受率迭代。",
-      "key_findings": [
-        "以 result.json 与 REPORT.md 为准核对数值"
-      ],
+      "plot_type": "grouped_bar",
       "description_id": "ch4_compare_sa_vs_sa_la1_lease"
     },
     {
@@ -980,23 +888,18 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "SA α=1：节点共置时间线",
       "topic": "solver_coplacement_and_coldstart",
-      "purpose": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
-      "summary": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
+      "purpose": "SA α=1 方案：节点内多模型共置与冷启动。",
+      "argument": "同色多段表示同槽多模型并存；斜线 hatch 表示 c<u（有效能力未达 u），说明省节点方案在启动期存在产能损失窗口。",
+      "content_detail": "【画面构成】device 分条；多色块=共置；斜线=冷启动。\n【论文衔接】运营风险与 Σ(u−c) 的可视化依据。",
+      "summary": "同色多段表示同槽多模型并存；斜线 hatch 表示 c<u（有效能力未达 u），说明省节点方案在启动期存在产能损失窗口。",
       "illustrates": [
-        "SA 共置",
-        "冷启动 c<u"
+        "共置",
+        "冷启动",
+        "device_num"
       ],
       "not_about": [
-        "QPS 波动",
-        "成本分解"
-      ],
-      "plot_type": "node_coplacement_timeline",
-      "visual_description": "共置时间线；斜线填充=冷启动期（c<u）。",
-      "key_findings": [
-        "以 result.json 与 REPORT.md 为准核对数值"
+        "流量折线"
       ],
       "description_id": "ch4_sa_la1_coplacement"
     },
@@ -1009,23 +912,18 @@
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "chapter": 4,
       "section": "§4 模型求解与实验",
-      "provenance": "manifest `source` → research/model_solver/outputs/",
-      "caption_echo": "模拟退火（α=1，s有序，600s）：节点共置时间线",
       "topic": "solver_coplacement_and_coldstart",
-      "purpose": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
-      "summary": "SA 方案下节点共置与冷启动可视化，与 CP-SAT 共置图同类、方案不同。",
+      "purpose": "SA 标准 方案：节点内多模型共置与冷启动。",
+      "argument": "同色多段表示同槽多模型并存；斜线 hatch 表示 c<u（有效能力未达 u），说明省节点方案在启动期存在产能损失窗口。",
+      "content_detail": "【画面构成】device 分条；多色块=共置；斜线=冷启动。\n【论文衔接】运营风险与 Σ(u−c) 的可视化依据。",
+      "summary": "同色多段表示同槽多模型并存；斜线 hatch 表示 c<u（有效能力未达 u），说明省节点方案在启动期存在产能损失窗口。",
       "illustrates": [
-        "SA 共置",
-        "冷启动 c<u"
+        "共置",
+        "冷启动",
+        "device_num"
       ],
       "not_about": [
-        "QPS 波动",
-        "成本分解"
-      ],
-      "plot_type": "node_coplacement_timeline",
-      "visual_description": "共置时间线；斜线填充=冷启动期（c<u）。",
-      "key_findings": [
-        "以 result.json 与 REPORT.md 为准核对数值"
+        "流量折线"
       ],
       "description_id": "ch4_sa_standard_coplacement"
     }

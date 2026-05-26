@@ -53,18 +53,19 @@ entry = by_id["ch2_multi_qps"]
 
 | 字段 | 所在文件 | 用法 |
 |------|----------|------|
-| `purpose` | manifest | **本图要论证/说明什么**（必读） |
+| `purpose` | manifest | 该图在章节中的**角色**（为何放这张图） |
+| `argument` | manifest | **读者应带走的论点/观点**（论文主张，必读） |
+| `content_detail` | manifest | **画面构成 + 应看到的规律 + 正文衔接**（详细内容，必读） |
 | `topic` | manifest | 机器标签；查 `topic_glossary` |
 | `illustrates` / `not_about` | manifest | 适用/不适用场景，避免与其它图混淆 |
-| `summary` | manifest | 一句话摘要 |
-| `visual_description` | descriptions | 图中应看到什么；写 Notion/论文时据此叙述 |
-| `key_findings` | 可引用的结论 bullet；改数字前须回查 `related_data` / `source` |
-| `key_numbers` | 允许直接引用的标量（仍建议核对 CSV） |
-| `related_figures` | 同节其它图，避免重复叙述 |
-| `related_data` | 复现统计的 CSV/脚本输出 |
-| `source` + `provenance` | 回到实验目录核对 |
-| `notion_page` | 该图应出现的 Notion 章节 |
-| `mapping_note` | 脱敏 id 与生产名的对应说明（**正文仍用 model_00x**） |
+| `summary` | manifest | `argument` 的一句话版 |
+| `visual_description` | descriptions | 简版画面描述 |
+| `key_findings` | descriptions | 可引用结论 bullet |
+| `key_numbers` | descriptions | 宜引用的标量 |
+| `related_figures` | descriptions | 同节关联图 id |
+| `related_data` | descriptions | 复现用 CSV 路径 |
+| `source` + `provenance` | descriptions | 实验输出目录 |
+| `notion_page` | manifest | 应出现的 Notion 章节 |
 
 ---
 
@@ -76,10 +77,11 @@ entry = by_id["ch2_multi_qps"]
 【论文插图阅读协议】
 1. 先读 thesis/figures/AGENT_READ_FIGURES.md 与 thesis/agent_workflow/FIGURES_NOTION_GITHUB.md。
 2. 若任务涉及某张图，用 URL/路径解析 figure id，在 thesis/figures/descriptions.json 中 lookup。
-3. 用该条的 visual_description + key_findings + key_numbers 理解含义；写正文时引用 figure_label（如「图2-1」）与 id。
-4. 需要改数字或声称「图中可见 X」时：读 descriptions 中的 related_data / source，打开对应 CSV 或 REPORT.md / result.json 复核。
-5. 禁止从 PNG 像素目测估计百分比、相关系数等；禁止在对外稿中恢复 anonymization_mapping 中的真实业务名。
-6. 仅当描述与源码/数据冲突时，再下载 raw_url 上的 PNG 做视觉核对，并在 OUTPUT 中注明冲突点。
+3. 用该条的 **argument** + **content_detail** 理解观点与画面；需要数字时再读 key_findings / key_numbers / visual_description。
+4. 写正文时引用 figure_label（如「图2-1」）与 id。
+5. 需要改数字或声称「图中可见 X」时：读 related_data / source 下 CSV 或 REPORT.md / result.json 复核。
+6. 禁止从 PNG 像素目测估计百分比、相关系数等；禁止在对外稿中恢复真实业务名。
+7. 仅当文本描述与数据冲突时，再下载 PNG 核对并注明冲突点。
 ```
 
 ---
