@@ -801,6 +801,66 @@
       "not_about": [
         "流量折线"
       ]
+    },
+    {
+      "id": "ch4_gurobi_m9_method_sweep",
+      "path": "thesis/figures/ch4/gurobi_m9_method_sweep.png",
+      "caption": "Gurobi 方法扫描（M=9，la1 s ordered，600s）：objective 与 gap",
+      "source": "research/model_solver/outputs/notion_charts/gurobi_m9_method_sweep.png",
+      "notion_page": "https://www.notion.so/3719804e900081a3b0dae1ac99d63735",
+      "chapter": 4,
+      "section": "§4 模型求解与实验",
+      "topic": "solver_experiment_figure",
+      "purpose": "9 模型 Gurobi 九变体扫描：方法 05（整数系数+big-M min）冷启动最优。",
+      "summary": "方法 05 可行且 gap 1.16%，baseline genconstr min 1h 仍无可行解。"
+    },
+    {
+      "id": "ch4_gurobi_m18_solver_comparison",
+      "path": "thesis/figures/ch4/gurobi_m18_solver_comparison.png",
+      "caption": "M=18 求解器对比（la1 s ordered）：Gurobi 05 warm vs CP-SAT",
+      "source": "research/model_solver/outputs/notion_charts/gurobi_m18_solver_comparison.png",
+      "notion_page": "https://www.notion.so/3719804e900081a3b0dae1ac99d63735",
+      "chapter": 4,
+      "section": "§4 模型求解与实验",
+      "topic": "solver_experiment_figure",
+      "purpose": "18 模型：Gurobi 冷启动失败；CP-SAT warm + Gurobi 3600s 将 objective 从 105k 压至 83.5k。",
+      "summary": "混合 pipeline 优于 CP-SAT 单独 3600s（99k）。"
+    },
+    {
+      "id": "ch4_gurobi_m18_incumbent_convergence",
+      "path": "thesis/figures/ch4/gurobi_m18_incumbent_convergence.png",
+      "caption": "Gurobi m18 warm start 收敛曲线（3600s）：incumbent 与 MIP gap",
+      "source": "research/model_solver/outputs/run_gurobi_m18_warm_3600s_trace/visualization/incumbent_convergence.png",
+      "notion_page": "https://www.notion.so/3719804e900081a3b0dae1ac99d63735",
+      "chapter": 4,
+      "section": "§4 模型求解与实验",
+      "topic": "solver_experiment_figure",
+      "purpose": "展示 warm start 后 ~52 min incumbent 突破：105,243 → 83,524，gap 31% → 1.6%。",
+      "summary": "有 warm start 不等于快速收敛；MIP 改进发生在 bound 收紧之后。"
+    },
+    {
+      "id": "ch4_gurobi_m18_coplacement_timeline",
+      "path": "thesis/figures/ch4/gurobi_m18_coplacement_timeline.png",
+      "caption": "Gurobi m18 warm 3600s 最优解：节点共置时间线",
+      "source": "research/model_solver/outputs/run_gurobi_m18_la1_intlin_timed/03_warm_3600s/visualization/node_coplacement_timeline.png",
+      "notion_page": "https://www.notion.so/3719804e900081a3b0dae1ac99d63735",
+      "chapter": 4,
+      "section": "§4 模型求解与实验",
+      "topic": "solver_coplacement_and_coldstart",
+      "purpose": "Gurobi 改进后的 m18 调度方案结构可视化。",
+      "summary": "obj=83,524 解的共置与冷启动分布。"
+    },
+    {
+      "id": "ch4_gurobi_m18_total_qpm_vs_p99",
+      "path": "thesis/figures/ch4/gurobi_m18_total_qpm_vs_p99.png",
+      "caption": "Gurobi m18 warm 3600s：总有效产能 vs SLA 需求下界",
+      "source": "research/model_solver/outputs/run_gurobi_m18_la1_intlin_timed/03_warm_3600s/visualization/total_qpm_vs_p99.png",
+      "notion_page": "https://www.notion.so/3719804e900081a3b0dae1ac99d63735",
+      "chapter": 4,
+      "section": "§4 模型求解与实验",
+      "topic": "solver_sla_capacity_check",
+      "purpose": "验证 Gurobi 改进解仍满足 SLA 容量约束。",
+      "summary": "改进 objective 的同时维持需求覆盖。"
     }
   ],
   "field_glossary": {
