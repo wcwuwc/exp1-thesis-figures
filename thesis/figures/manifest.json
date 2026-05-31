@@ -783,7 +783,7 @@
       "id": "ch4_sa_standard_coplacement",
       "path": "thesis/figures/ch4/sa_standard_node_coplacement_timeline.png",
       "caption": "模拟退火（α=1，s有序，600s）：节点共置时间线",
-      "source": "research/model_solver/outputs/run_SA_alpha1_600s_migrate_s_ordered/node_coplacement_timeline.png",
+      "source": "research/model_solver/outputs/sa_objective_aligned_20260531/migrate_s_ordered/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "description_id": "ch4_sa_standard_coplacement",
       "chapter": 4,
@@ -1041,6 +1041,42 @@
       "topic": "solver_experiment_figure",
       "purpose": "Gurobi 265s 达 OPTIMAL vs CP-SAT 600s FEASIBLE。",
       "summary": "Gurobi gap 1.0% vs CP-SAT 12.8%。"
+    },
+    {
+      "id": "ch4_three_solvers_coplacement_compare",
+      "path": "thesis/figures/ch4/three_solvers_coplacement_compare.png",
+      "caption": "三求解器多次实验最优解：节点共置时间线并列对比（M=9，600s）",
+      "source": "research/model_solver/outputs/compare_three_solvers_m9_la1_600s/best_30min_viz/compare_coplacement_timeline.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
+      "chapter": 4,
+      "section": "§4.3 求解结果",
+      "topic": "solver_coplacement_and_coldstart",
+      "purpose": "Gurobi / CP-SAT / SA 三路 best run 共置结构并列。",
+      "summary": "Gurobi obj 41,479；CP-SAT obj 42,738；SA migrate obj 49,372 / cost_base 48,629。"
+    },
+    {
+      "id": "ch4_three_solvers_trace_objective",
+      "path": "thesis/figures/ch4/three_solvers_trace_objective_compare.png",
+      "caption": "三求解器多次实验最优 run：objective 收敛 trace 叠加",
+      "source": "research/model_solver/outputs/compare_three_solvers_m9_la1_600s/best_30min_viz/trace_objective_compare.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
+      "chapter": 4,
+      "section": "§4.3 求解结果",
+      "topic": "solver_experiment_figure",
+      "purpose": "三路 best run 墙钟内 objective 演化对比。",
+      "summary": "Gurobi ~265s OPT；CP-SAT 600s FEASIBLE；SA 600s 仍在改进。"
+    },
+    {
+      "id": "ch4_three_solvers_trace_normalized",
+      "path": "thesis/figures/ch4/three_solvers_trace_normalized_compare.png",
+      "caption": "三求解器归一化收敛速度对比（best run）",
+      "source": "research/model_solver/outputs/compare_three_solvers_m9_la1_600s/best_30min_viz/trace_normalized_compare.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
+      "chapter": 4,
+      "section": "§4.3 求解结果",
+      "topic": "solver_experiment_figure",
+      "purpose": "归一化 objective 改进曲线，比较收敛效率。",
+      "summary": "Gurobi 最快达近最优；CP-SAT 早停于优/差两档；SA 600s 未饱和。"
     }
   ],
   "field_glossary": {
