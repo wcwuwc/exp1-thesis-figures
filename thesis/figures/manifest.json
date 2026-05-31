@@ -1019,6 +1019,18 @@
       "summary": "cost_base=40,781；切换 1 次。"
     },
     {
+      "id": "ch4_gurobi_m9_per_model_qpm",
+      "path": "thesis/figures/ch4/gurobi_m9_per_model_qpm_vs_p99.png",
+      "caption": "Gurobi 05：分模型有效产能与 SLA 需求下界（M=9）",
+      "source": "research/model_solver/outputs/compare_la1_sordered_local_20260531_113602/gurobi_05/visualization/per_model_qpm_vs_p99.png",
+      "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
+      "chapter": 4,
+      "section": "§4.3.2 调度结果可视化",
+      "topic": "solver_sla_capacity_check",
+      "purpose": "Gurobi 最优解 SLA 容量核对。",
+      "summary": "全 (t,m) 0 违约。"
+    },
+    {
       "id": "ch4_gurobi_m9_incumbent_convergence",
       "path": "thesis/figures/ch4/gurobi_m9_incumbent_convergence.png",
       "caption": "Gurobi 05 vs CP-SAT：600s incumbent 收敛对比",
