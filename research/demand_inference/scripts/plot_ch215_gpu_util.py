@@ -12,12 +12,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
-CSV = ROOT / "data/GPU活跃度及功率-总体平均-data-2026-05-31 22_25_18.csv"
+CSV = ROOT / "data/GPU活跃度及功率-总体平均-data-2026-05-31 22_33_21.csv"
 OUT = Path(__file__).resolve().parent / "outputs/ch2_215/figures/ch2_gpu_util.png"
 
-# Align x-axis to the nine-model QPS sample window (§2.1.3).
-QPS_SAMPLE_START = pd.Timestamp("2026-05-01 00:00:00")
-QPS_SAMPLE_END = pd.Timestamp("2026-05-08 22:58:00")
+SAMPLE_START = pd.Timestamp("2026-05-01 00:00:00")
+SAMPLE_END = pd.Timestamp("2026-05-08 22:58:00")
 
 
 def load_clean() -> pd.DataFrame:
@@ -25,10 +24,7 @@ def load_clean() -> pd.DataFrame:
     df.columns = ["Time", "gpu_util"]
     df["Time"] = pd.to_datetime(df["Time"])
     df["gpu_util"] = pd.to_numeric(df["gpu_util"], errors="coerce")
-    df = df[df["gpu_util"] <= 100].sort_values("Time")
-    offset = QPS_SAMPLE_START - df["Time"].iloc[0]
-    df["Time"] = df["Time"] + offset
-    return df[df["Time"] <= QPS_SAMPLE_END]
+    return df[(df["gpu_util"] <= 100) & (df["Time"] <= SAMPLE_END)].sort_values("Time")
 
 
 def main() -> None:
@@ -43,8 +39,8 @@ def main() -> None:
     ax.axhline(30, color="gray", ls="-.", lw=0.8, alpha=0.7, label="30% reference")
     ax.set_xlabel("Time (UTC+8)")
     ax.set_ylabel("GPU utilization (%)")
-    ax.set_title("Cluster GPU utilization — 2h average (aligned to 9-model window 2026-05-01 to 05-08)")
-    ax.set_xlim(QPS_SAMPLE_START, QPS_SAMPLE_END)
+    ax.set_title("Cluster GPU utilization — 2h average (2026-05-01 to 05-08)")
+    ax.set_xlim(SAMPLE_START, SAMPLE_END)
     ax.set_ylim(0, 70)
     ax.legend(loc="upper left", fontsize=8)
     ax.grid(True, alpha=0.25)
