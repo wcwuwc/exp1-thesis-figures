@@ -114,6 +114,34 @@
       "plot_type": "dual_panel_time_series"
     },
     {
+      "id": "ch2_gpu_util",
+      "path": "thesis/figures/ch2/ch2_gpu_util.png",
+      "caption": "图2-5 集群 GPU 利用率时序（2 小时均值，2026-05-24～05-31）",
+      "source": "research/demand_inference/scripts/outputs/ch2_215/figures/ch2_gpu_util.png",
+      "notion_page": "https://www.notion.so/cntryroa/A-3589804e900080b4856de207edc3f304",
+      "description_id": "ch2_gpu_util",
+      "figure_label": "图2-5",
+      "chapter": 2,
+      "section": "§2.1.5",
+      "topic": "gpu_utilization_timeseries",
+      "purpose": "用运维导出的集群 GPU 活跃度时序，补充 §2.1.5 利用率维度的动态证据。",
+      "argument": "利用率并非静态常数：清晨可探底至约 30%，午夜前后升至 55%～61%，周均值约 49% 仍显著低于满负载，印证「为峰值预留冗余、非高峰闲置」的结构性问题。",
+      "content_detail": "【画面构成】横轴 2026-05-24 22:00 至 05-31 22:00（UTC+8），纵轴 GPU 利用率（%）；2 小时粒度折线，附均值/中位数/30% 参考线。\n【应看到的规律】① 强日内周期，06 时附近谷底、0～2 时高峰；② 全窗均值约 48.5%、中位数约 50.2%；③ 低谷可至 29.5%，与「低于 30%」表述在谷底时段一致。\n【论文衔接】支撑 §2.1.5 利用率现状与 §2.2.2 资源闲置问题；与图 2-1 请求峰谷相位对照。",
+      "summary": "GPU 利用率：强日周期，均值约 49%，清晨探底约 30%。",
+      "illustrates": [
+        "GPU 利用率时序",
+        "日内节律",
+        "低谷闲置",
+        "峰值冗余"
+      ],
+      "not_about": [
+        "QPS 流量",
+        "优化求解结果",
+        "租约成本"
+      ],
+      "plot_type": "single_series_time_series"
+    },
+    {
       "id": "ch3_qpm_anonymized",
       "path": "thesis/figures/ch3/newdata_anonymized_qps.png",
       "caption": "匿名化模型 QPM 时序（7 日）",
@@ -783,7 +811,7 @@
       "id": "ch4_sa_standard_coplacement",
       "path": "thesis/figures/ch4/sa_standard_node_coplacement_timeline.png",
       "caption": "模拟退火（α=1，s有序，600s）：节点共置时间线",
-      "source": "research/model_solver/outputs/sa_objective_aligned_20260531/migrate_s_ordered/node_coplacement_timeline.png",
+      "source": "research/model_solver/outputs/sa_migrate_multistart_aligned_20260601/run_sa_migrate_seed4_w8_20260531_212903/node_coplacement_timeline.png",
       "notion_page": "https://www.notion.so/35a9804e900080e2bf56d9bdae2bc939",
       "description_id": "ch4_sa_standard_coplacement",
       "chapter": 4,
@@ -1052,7 +1080,7 @@
       "section": "§4.3 求解结果",
       "topic": "solver_coplacement_and_coldstart",
       "purpose": "Gurobi / CP-SAT / SA 三路 best run 共置结构并列。",
-      "summary": "Gurobi obj 41,479；CP-SAT obj 42,738；SA migrate obj 49,372 / cost_base 48,629。"
+      "summary": "Gurobi obj 41,479；CP-SAT obj 42,738；SA migrate seed4 obj 47,304 / cost_base 46,554。"
     },
     {
       "id": "ch4_three_solvers_trace_objective",
