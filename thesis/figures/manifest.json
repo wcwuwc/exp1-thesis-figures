@@ -1105,6 +1105,34 @@
       "topic": "solver_experiment_figure",
       "purpose": "归一化 objective 改进曲线，比较收敛效率。",
       "summary": "Gurobi 最快达近最优；CP-SAT 早停于优/差两档；SA 600s 未饱和。"
+    },
+    {
+      "id": "ch5_lease_iter_transition_stitch",
+      "path": "thesis/figures/ch5/ch5_lease_iter_transition_stitch.png",
+      "caption": "图5-1 Lease-Iter 过渡拼接共置图（r1.8→r1.416，D-1‖D0）",
+      "source": "research/model_solver/outputs/explore_lease_price_ratio_20260531_181940/transition_r1p8_to_r1p416/transition_coplacement_stitch.png",
+      "notion_page": "https://www.notion.so/cntryroa/36b9804e900080449f3fc0c244dfde24",
+      "description_id": "ch5_lease_iter_transition_stitch",
+      "figure_label": "图5-1",
+      "chapter": 5,
+      "section": "§5.2.5",
+      "topic": "solver_migration_stability",
+      "purpose": "展示两期单期最优解经 Lease-Iter 重配置后的 D-1‖D0 拼接共置轨迹。",
+      "argument": "匹配物理行在 0:00 边界零切换；释放长租行（7、16）D0 不可用；未匹配 B 槽（25、29）落到弹性行 E0/E1。",
+      "content_detail": "【画面构成】上下两 panel：上为机械拼接对照 A‖B；下为 Lease-Iter 过渡。左/右色条为 D-1/D0 租约；释放与 E 行有灰紫第三色与斜线阴影。\n【典型读数】15+15 匹配对；边界 matched switch=0；K=2 弹性行。\n【论文衔接】§5.2.5 算例可视化。",
+      "summary": "r1.8→r1.416 过渡：匹配行零切换，2 行释放，2 个 B 槽上 E 行。",
+      "illustrates": [
+        "动态重配置",
+        "Lease-Iter",
+        "拼接共置",
+        "释放节点",
+        "弹性行 E"
+      ],
+      "not_about": [
+        "单期 MIP 求解",
+        "QPS 流量"
+      ],
+      "plot_type": "dual_panel_coplacement_stitch"
     }
   ],
   "field_glossary": {
